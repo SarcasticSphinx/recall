@@ -1,4 +1,13 @@
 "use client";
+import dynamic from "next/dynamic";
+const ActivityChart = dynamic(
+  () => import("./activity-chart").then((m) => m.ActivityChart),
+  {
+    loading: () => (
+      <div className="chart-placeholder" aria-label="Loading practice chart" />
+    ),
+  },
+);
 import { usePageCopy } from "@/hooks/use-page-copy";
 import { useWorkspace } from "./workspace-context";
 import { Icon } from "@/components/icon";
@@ -156,6 +165,7 @@ export function TodayPage() {
           <span>Create a deck</span>
         </button>
       </div>
+      <ActivityChart />
       <footer className="page-footer">
         <Icon name="spark" size={15} />
         <span>

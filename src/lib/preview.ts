@@ -115,6 +115,30 @@ export function applyPreview(
         createdAt: new Date().toISOString(),
       });
       break;
+    case "createCards":
+      if (!next.decks.some((d) => d.id === action.deckId))
+        throw new Error("Deck not found.");
+      for (const card of action.cards) {
+        const existing = next.cards.find((c) => c.id === card.id);
+        if (
+          existing &&
+          (existing.deckId !== action.deckId ||
+            existing.question !== card.question ||
+            existing.answer !== card.answer)
+        )
+          throw new Error(
+            "Some drafts were already saved with different content. Refresh before editing them.",
+          );
+        if (!existing)
+          next.cards.push({
+            ...card,
+            deckId: action.deckId,
+            schedule: newSchedule(),
+            version: 0,
+            createdAt: new Date().toISOString(),
+          });
+      }
+      break;
     case "updateCard": {
       const card = next.cards.find((c) => c.id === action.id);
       if (!card || card.version !== action.version)

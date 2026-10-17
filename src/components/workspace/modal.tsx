@@ -1,4 +1,5 @@
 "use client";
+import { RecallMark } from "@/components/recall-mark";
 import type { ReactNode } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Icon } from "@/components/icon";
@@ -43,7 +44,7 @@ export function Modal({
               <circle className="memory-orbit" cx="160" cy="75" r="48" />
             </svg>
             <span className="signin-mark">
-              <Icon name="cards" size={30} />
+              <RecallMark size={30} />
             </span>
             <span className="signin-art-caption">
               A LITTLE PRACTICE. A LASTING TRACE.

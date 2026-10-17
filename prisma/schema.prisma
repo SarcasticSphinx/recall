@@ -20,6 +20,7 @@ model User {
   decks         Deck[]
   reviews       Review[]
   imageUploads  ImageUpload[]
+  aiRequests    AiRequest[]
   timezone      String    @default("UTC")
   newCardLimit  Int       @default(20)
   editorMode    String    @default("simple")
@@ -98,6 +99,8 @@ model Card {
   answer          String
   questionRich    Json?
   answerRich      Json?
+  sourceRequestId String?
+  sourceRequest   AiRequest? @relation(fields: [sourceRequestId], references: [id], onDelete: SetNull)
   schedule        Json
   due             DateTime  @default(now())
   repetitions     Int       @default(0)
@@ -132,5 +135,15 @@ model ImageUpload {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
+  @@index([userId, createdAt])
+}
+
+model AiRequest {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes String
+  createdAt DateTime @default(now())
+  cards Card[]
   @@index([userId, createdAt])
 }

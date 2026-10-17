@@ -66,6 +66,25 @@ export const actionSchema = z
     }),
     z.object({ type: z.literal("deleteCard"), id }),
     z.object({
+      type: z.literal("createCards"),
+      deckId: id,
+      sourceRequestId: id,
+      cards: z
+        .array(
+          z.object({
+            id: z.string().uuid(),
+            question: question.min(1),
+            answer: answer.min(1),
+          }),
+        )
+        .min(1)
+        .max(5)
+        .refine(
+          (cards) => new Set(cards.map((c) => c.id)).size === cards.length,
+          "Each draft needs a unique ID.",
+        ),
+    }),
+    z.object({
       type: z.literal("review"),
       id,
       version: z.number().int().nonnegative(),
@@ -122,6 +141,7 @@ export const workspaceSchema = z.object({
       deckId: id,
       question,
       answer,
+      sourceNotes: z.string().max(12000).nullable().optional(),
       ...richFields,
       version: nonnegative.int(),
       createdAt: isoDate,

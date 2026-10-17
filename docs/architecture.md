@@ -2,18 +2,18 @@
 
 ## Decisions
 
-| Area            | Decision                        | Reason                                        |
-| --------------- | ------------------------------- | --------------------------------------------- |
-| Web and backend | Next.js App Router + TypeScript | One project for web and server                |
-| Styling         | Tailwind CSS                    | Responsive styling                            |
-| Animation       | CSS initially                   | Initial interactions do not require Motion    |
-| Database        | Neon Postgres                   | Persistent data across devices                |
-| ORM             | Prisma                          | Owner familiarity; chosen over Drizzle        |
-| Authentication  | Better Auth + Google            | Accounts and sessions without password flows  |
-| Scheduling      | ts-fsrs                         | Existing TypeScript FSRS implementation       |
-| Validation      | Zod                             | Runtime validation at server boundaries       |
-| Hosting         | Vercel proposed                 | Deployment setup pending                      |
-| AI              | OpenRouter server module        | OpenRouter chosen; workflow and model pending |
+| Area            | Decision                        | Reason                                         |
+| --------------- | ------------------------------- | ---------------------------------------------- |
+| Web and backend | Next.js App Router + TypeScript | One project for web and server                 |
+| Styling         | Tailwind CSS                    | Responsive styling                             |
+| Animation       | CSS initially                   | Initial interactions do not require Motion     |
+| Database        | Neon Postgres                   | Persistent data across devices                 |
+| ORM             | Prisma                          | Owner familiarity; chosen over Drizzle         |
+| Authentication  | Better Auth + Google            | Accounts and sessions without password flows   |
+| Scheduling      | ts-fsrs                         | Existing TypeScript FSRS implementation        |
+| Validation      | Zod                             | Runtime validation at server boundaries        |
+| Hosting         | Vercel proposed                 | Deployment setup pending                       |
+| AI              | OpenRouter server module        | Notes-to-cards implemented; model configurable |
 
 ## Authentication and requests
 

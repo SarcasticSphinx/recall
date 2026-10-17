@@ -21,6 +21,7 @@ export function DeckEditor({ deck }: { deck?: Deck }) {
   const [imageUrl, setImageUrl] = useState<string | null>(
     deck?.imageUrl || null,
   );
+  const [selectedColor, setColor] = useState(deck?.color || "indigo");
   const [uploading, setUploading] = useState(false);
   return (
     <form
@@ -46,8 +47,68 @@ export function DeckEditor({ deck }: { deck?: Deck }) {
       }}
     >
       <p className="modal-description">
-        Give what you&apos;re learning a little home.
+        Make this collection yours. Add a cover, choose an icon, and give it a
+        name.
       </p>
+      <div className={`deck-profile ${selectedColor}`}>
+        <ImageUpload
+          purpose="deck"
+          dropzone
+          onBusyChange={setUploading}
+          onUpload={setImageUrl}
+          label={imageUrl ? "Change cover" : "Add a cover image"}
+        >
+          {imageUrl && (
+            <Image
+              src={imageUrl}
+              alt="Deck cover"
+              fill
+              sizes="(max-width: 640px) 90vw, 520px"
+              unoptimized
+              className="deck-cover-image"
+            />
+          )}
+        </ImageUpload>
+        <div className="deck-profile-bottom">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="deck-avatar-button"
+                aria-label="Change deck icon"
+              >
+                <Icon name={icon} size={30} />
+                <span>
+                  <Icon name="edit" size={12} />
+                </span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="icon-picker-menu">
+              {deckIconNames.map((name) => (
+                <DropdownMenuItem key={name} onSelect={() => setIcon(name)}>
+                  <Icon name={name} />
+                  <span>
+                    {name === "cards"
+                      ? "Flashcards"
+                      : name.charAt(0).toUpperCase() + name.slice(1)}
+                  </span>
+                  {icon === name && <Icon name="check" size={14} />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <span>Click the icon to change it</span>
+          {imageUrl && (
+            <button
+              type="button"
+              className="text-button"
+              onClick={() => setImageUrl(null)}
+            >
+              Remove cover
+            </button>
+          )}
+        </div>
+      </div>
       <label className="field">
         Deck name
         <input
@@ -59,70 +120,21 @@ export function DeckEditor({ deck }: { deck?: Deck }) {
         />
       </label>
       <fieldset className="color-picker">
-        <legend>Pick a little color</legend>
+        <legend>Accent color</legend>
         {colors.map((color) => (
           <label key={color} className={`color-choice ${color}`}>
             <input
               type="radio"
               name="color"
               value={color}
-              defaultChecked={color === (deck?.color || "indigo")}
+              checked={color === selectedColor}
+              onChange={() => setColor(color)}
             />
             <span className="sr-only">{color}</span>
             <Icon name="check" size={17} />
           </label>
         ))}
       </fieldset>
-      <div className="deck-identity">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="button"
-              aria-label="Choose deck icon"
-            >
-              <Icon name={icon} />
-              Choose icon
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="icon-picker-menu">
-            {deckIconNames.map((name) => (
-              <DropdownMenuItem key={name} onSelect={() => setIcon(name)}>
-                <Icon name={name} />
-                <span>{name}</span>
-                {icon === name && <Icon name="check" size={14} />}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <ImageUpload
-          purpose="deck"
-          onBusyChange={setUploading}
-          onUpload={setImageUrl}
-        />
-      </div>
-      {imageUrl && (
-        <div className="deck-image-preview">
-          <Image
-            src={imageUrl}
-            alt="Deck cover preview"
-            width={400}
-            height={160}
-            unoptimized
-          />
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => setImageUrl(null)}
-          >
-            Remove image
-          </button>
-        </div>
-      )}
-      <p className="form-hint">
-        An image takes the place of your deck icon. Remove it to show the icon
-        again.
-      </p>
       <div className="modal-actions">
         <button
           type="button"

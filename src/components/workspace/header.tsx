@@ -1,4 +1,5 @@
 "use client";
+import { RecallMark } from "@/components/recall-mark";
 import { useWorkspace } from "./workspace-context";
 import { Icon } from "@/components/icon";
 import { ThemeControl } from "@/components/theme-control";
@@ -12,7 +13,7 @@ export function WorkspaceHeader() {
         onClick={() => navigate("today")}
         aria-label="Recall home"
       >
-        <Icon name="cards" size={22} />
+        <RecallMark size={22} />
         <span>
           recall<span className="brand-dot">.</span>
         </span>

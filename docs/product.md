@@ -8,7 +8,7 @@ Open Recall, practice retrieval, and know what to review next. Start with a resp
 
 - Google sign-in and private accounts across devices
 - Create, rename, and delete decks
-- Create, edit, and delete question/answer cards in Simple or Rich / advanced mode
+- Create, edit, and delete question/answer cards in Focus or Canvas mode
 - Rich formatting for both sides, answer images, and deck covers or Lucide icons
 - Study one card at a time; attempt an answer before revealing it
 - Rate recall with Again, Hard, Good, or Easy
@@ -22,9 +22,9 @@ The non-AI core must work independently of an AI provider.
 
 ## AI direction
 
-OpenRouter is the selected AI provider. A server-only integration module is implemented; the first workflow, model, and release timing remain open. Manual studying does not make AI requests.
+OpenRouter powers notes-to-cards drafting. Users supply notes, request up to five drafts, edit and select them, then explicitly save. The deployment model remains configurable. Manual studying does not make AI requests.
 
-Candidates: notes to editable flashcard drafts (recommended first experiment), card improvement, explanations after recall attempts, and source summarization. These are candidates, not committed MVP features. Users should edit and approve generated cards before saving them.
+Notes to editable drafts is implemented. Future candidates include card improvement, explanations after recall attempts, and source summarization.
 
 ## Visual direction
 

@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { RecallApp } from "@/components/recall-app";
 import { getAuth, isAuthConfigured } from "@/lib/auth";
+import { hasOpenRouter } from "@/lib/ai/openrouter";
 import { hasCloudinary } from "@/lib/cloudinary";
 import { loadWorkspace } from "@/lib/workspace-server";
 
@@ -27,6 +28,7 @@ export default async function Home() {
   return (
     <RecallApp
       uploadsEnabled={hasCloudinary()}
+      aiEnabled={hasOpenRouter()}
       user={user}
       initialWorkspace={initialWorkspace}
       authEnabled={authEnabled}

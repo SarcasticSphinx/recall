@@ -1,6 +1,6 @@
 "use client";
+import { RecallMark } from "@/components/recall-mark";
 import { useControllerContext, useWorkspace } from "./workspace-context";
-import { Icon } from "@/components/icon";
 import { WorkspaceNavigation } from "./navigation";
 import { WorkspaceHeader } from "./header";
 import { TodayPage } from "./today-page";
@@ -9,6 +9,7 @@ import { DeckDetail } from "./deck-detail";
 import { PreferencesPage } from "./preferences-page";
 import { WorkspaceDialogs } from "./workspace-dialogs";
 import { ReviewSession } from "./review-session";
+import { WorkspaceToasts } from "./workspace-toasts";
 import { Feedback } from "./feedback";
 export function WorkspaceShell() {
   const { workspace, error, loadError } = useControllerContext();
@@ -16,7 +17,7 @@ export function WorkspaceShell() {
     return (
       <main className="startup">
         <div className="brand">
-          <Icon name="cards" size={30} />
+          <RecallMark size={30} />
           recall
         </div>
         <p role={error ? "alert" : "status"}>
@@ -38,6 +39,7 @@ function LoadedWorkspace() {
   const { isPreview, loadError, modal, session, view, deck } = useWorkspace();
   return (
     <div className="app-shell">
+      <WorkspaceToasts />
       <WorkspaceNavigation />
       <div className="main-shell">
         <WorkspaceHeader />

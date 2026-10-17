@@ -8,6 +8,7 @@ export type Schedule = Omit<Card, "due" | "last_review"> & {
 export type StudyCard = {
   id: string;
   deckId: string;
+  sourceNotes?: string | null;
   question: string;
   answer: string;
   questionRich?: RichNode | null;

@@ -34,12 +34,17 @@ export async function loadWorkspace(
     db.deck.findMany({
       where: { userId },
       orderBy: { createdAt: "asc" },
-      include: { cards: { orderBy: { createdAt: "asc" } } },
+      include: {
+        cards: {
+          orderBy: { createdAt: "asc" },
+          include: { sourceRequest: { select: { notes: true } } },
+        },
+      },
     }),
     db.review.findMany({
       where: {
         userId,
-        reviewedAt: { gte: new Date(Date.now() - 48 * 3600000) },
+        reviewedAt: { gte: new Date(Date.now() - 8 * 24 * 3600000) },
       },
       orderBy: { reviewedAt: "desc" },
     }),
@@ -56,6 +61,7 @@ export async function loadWorkspace(
       deck.cards.map((card) => ({
         id: card.id,
         deckId: deck.id,
+        sourceNotes: card.sourceRequest?.notes || null,
         question: card.question,
         answer: card.answer,
         questionRich: card.questionRich as RichNode | null,
@@ -138,6 +144,61 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
             : Prisma.DbNull,
           schedule: json(newSchedule()),
         },
+      });
+      break;
+    case "createCards":
+      await db.$transaction(async (tx) => {
+        if (
+          !(await tx.deck.findFirst({
+            where: { id: action.deckId, userId },
+            select: { id: true },
+          }))
+        )
+          throw new WorkspaceError("Deck not found.", 404);
+        if (
+          !(await tx.aiRequest.findFirst({
+            where: { id: action.sourceRequestId, userId },
+            select: { id: true },
+          }))
+        )
+          throw new WorkspaceError("Draft source not found.", 404);
+        // Stable draft UUIDs make a repeated save safe after a lost response.
+        await tx.card.createMany({
+          data: action.cards.map((card) => ({
+            ...card,
+            deckId: action.deckId,
+            sourceRequestId: action.sourceRequestId,
+            schedule: json(newSchedule()),
+          })),
+          skipDuplicates: true,
+        });
+        const saved = await tx.card.findMany({
+          where: { id: { in: action.cards.map((card) => card.id) } },
+          select: {
+            id: true,
+            deckId: true,
+            question: true,
+            answer: true,
+            sourceRequestId: true,
+            deck: { select: { userId: true } },
+          },
+        });
+        if (
+          saved.some((card) => {
+            const draft = action.cards.find((d) => d.id === card.id)!;
+            return (
+              card.deck.userId !== userId ||
+              card.deckId !== action.deckId ||
+              card.sourceRequestId !== action.sourceRequestId ||
+              card.question !== draft.question ||
+              card.answer !== draft.answer
+            );
+          })
+        )
+          throw new WorkspaceError(
+            "Some drafts were already saved with different content. Refresh your workspace before editing them.",
+            409,
+          );
       });
       break;
     case "updateCard": {

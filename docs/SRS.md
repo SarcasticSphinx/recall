@@ -30,7 +30,7 @@ Primary objectives:
 1. Support short, focused study sessions with little interface friction.
 2. Persist personal learning material and progress across devices.
 3. Combine answer retrieval with a spaced repetition schedule.
-4. Incorporate useful AI assistance, with its first workflow to be selected.
+4. Incorporate useful AI assistance through editable notes-to-cards drafts.
 5. Establish a web foundation that can support a later React Native client.
 
 The app shall work on the web, including the owner's Mac and iPhone browsers. Native mobile development is a later phase. No delivery date, traffic target, or operating budget has been agreed.
@@ -147,7 +147,7 @@ The default daily limit and timezone-change behavior are undecided. A session's 
 
 ## 7. AI requirements and decision boundary
 
-OpenRouter is the selected AI provider. A configurable server-only client is implemented; the first user-facing AI workflow and model remain undecided. Availability and pricing must be checked when choosing the model.
+OpenRouter is the selected AI provider. A configurable server-only client is implemented; notes-to-cards with editable approval is implemented, while the deployment model remains configurable. Availability and pricing must be checked when choosing the model.
 
 | Candidate                 | Intended value                             | Status                       |
 | ------------------------- | ------------------------------------------ | ---------------------------- |
@@ -281,7 +281,7 @@ Before release, the selected scope shall pass relevant acceptance scenarios, lin
 
 ## 13. Implementation state and milestones
 
-At the initial requirements baseline, only the scaffold existed. The first implementation slice now includes the dashboard, deck/card management, browser preview, FSRS review flow, preferences, Prisma schema and migration, and auth/API foundation. See [implementation notes](implementation.md) for defaults and verification evidence. Live database/auth verification, AI integration, installation support, and deployment remain pending.
+At the initial requirements baseline, only the scaffold existed. The first implementation slice now includes the dashboard, deck/card management, browser preview, FSRS review flow, preferences, Prisma schema and migration, and auth/API foundation. See [implementation notes](implementation.md) for defaults and verification evidence. Authenticated browser verification, installation support, and deployment remain pending; provider connectivity and the notes-to-cards implementation are complete.
 
 Development-specific build and audit findings belong in [development.md](development.md); they are not product requirements.
 
@@ -300,7 +300,7 @@ The first complete product milestone is creating a deck on Mac, reviewing it on 
 
 | ID      | Decision needed                                                                      | Resolve before                             |
 | ------- | ------------------------------------------------------------------------------------ | ------------------------------------------ |
-| OPEN-01 | First AI workflow, model, and whether it ships with the initial release              | AI implementation and release scope freeze |
+| OPEN-01 | Deployment AI model and production readiness                                         | AI implementation and release scope freeze |
 | OPEN-02 | AI quotas, spend allowance, input limits, retries, and output quality criteria       | Billable AI requests                       |
 | OPEN-03 | Default daily limit, timezone initialization/change behavior, and queue ordering     | Scheduler and Today implementation         |
 | OPEN-04 | FSRS initial settings and learning/relearning behavior                               | Scheduling acceptance tests                |
@@ -320,10 +320,18 @@ This SRS is the consolidated requirements baseline. Keep the shorter companion d
 
 ## Rich authoring and media revision — 17 October 2026
 
-- Preferences shall offer Simple and Rich / advanced authoring. Both question and answer support rich formatting; existing formatting remains visible in either preference.
+- Preferences shall offer Focus and Canvas authoring. Both question and answer support rich formatting; existing formatting remains visible in either preference.
 - Rich answers may attach Cloudinary images. Questions do not accept images. Uploads require an authenticated account and configured server credentials.
 - Decks may use a selected Lucide icon or a Cloudinary cover image. A cover takes visual precedence over the icon.
 - Uploads accept JPEG, PNG, or WebP up to 5 MB, validate file content on the server, and allow at most 30 uploads per account per hour.
 - Interface controls use Lucide React icons. Dropdowns, selects, and editing dialogs use shadcn components while retaining the established appearance.
 - Page headings and supporting copy rotate from a local copy library on refresh; copy requires no AI calls.
 - Workspace state, navigation, pages, editing, and review shall be maintained as focused components and hooks.
+
+## Collection polish and AI revision
+
+The Recall brand retains its original stacked-note SVG, separate from general Lucide icons. Authoring modes are named Focus and Canvas. Cover images support drag-and-drop or file selection, replacement and removal. Image links are not offered as an attachment method.
+
+Save notices use shadcn Sonner; decks offer Cards/Table tabs with search, sorting, pagination and actions. The Today chart displays actual review activity for the last seven local days.
+
+The first AI workflow is notes-to-cards: 80–12,000 characters of notes, 1–5 draft questions, editable review, selection and explicit saving. Only authenticated users can generate. Each account has five attempts per rolling 24 hours, reserved before provider calls. Source notes are retained privately and accessible on saved cards. Invalid output or provider failure preserves the open notes. Closing/reloading discards unsaved drafts. Model calls are time/output bounded, do not use tools and do not automatically retry. Provider spend limits and live verification remain deployment requirements.

@@ -8,8 +8,11 @@ export function hasOpenRouter() {
     process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_MODEL,
   );
 }
-// Server-only foundation. No UI or endpoint incurs AI usage until a workflow is selected.
-export async function completeWithOpenRouter(messages: AIMessage[]) {
+// All AI traffic stays on the server. Caller must authenticate and reserve quota first.
+export async function completeWithOpenRouter(
+  messages: AIMessage[],
+  responseFormat?: unknown,
+) {
   if (!hasOpenRouter())
     throw new Error("Configure OPENROUTER_API_KEY and OPENROUTER_MODEL first.");
   const response = await fetch(
@@ -24,7 +27,13 @@ export async function completeWithOpenRouter(messages: AIMessage[]) {
       body: JSON.stringify({
         model: process.env.OPENROUTER_MODEL,
         messages,
-        max_tokens: 1000,
+        max_tokens: 2200,
+        ...(responseFormat
+          ? {
+              response_format: responseFormat,
+              provider: { require_parameters: true },
+            }
+          : {}),
       }),
       signal: AbortSignal.timeout(30000),
     },
@@ -33,6 +42,8 @@ export async function completeWithOpenRouter(messages: AIMessage[]) {
     throw new Error("The AI provider could not complete this request.");
   const result = await response.json();
   const text = result.choices?.[0]?.message?.content;
+  if (result.choices?.[0]?.finish_reason === "length")
+    throw new Error("The AI response was cut short. Try fewer notes.");
   if (typeof text !== "string")
     throw new Error("The AI provider returned an invalid response.");
   return text;

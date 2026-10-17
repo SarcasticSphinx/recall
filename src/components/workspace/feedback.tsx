@@ -2,7 +2,7 @@
 import { useWorkspace } from "./workspace-context";
 
 export function Feedback() {
-  const { user, error, notice, busy, setSession, refresh } = useWorkspace();
+  const { user, error, busy, setSession, refresh } = useWorkspace();
   return error ? (
     <div className="feedback error" role="alert">
       {error}
@@ -16,10 +16,6 @@ export function Feedback() {
           Refresh workspace
         </button>
       )}
-    </div>
-  ) : notice ? (
-    <div className="feedback" role="status">
-      {notice}
     </div>
   ) : null;
 }

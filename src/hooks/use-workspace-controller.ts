@@ -20,6 +20,7 @@ export function useWorkspaceController({
   authEnabled,
   loadError,
   uploadsEnabled,
+  aiEnabled,
 }: WorkspaceProps) {
   const [workspace, setWorkspace] = useState<Workspace | null>(
     initialWorkspace,
@@ -267,5 +268,6 @@ export function useWorkspaceController({
     authEnabled,
     loadError,
     uploadsEnabled,
+    aiEnabled,
   };
 }

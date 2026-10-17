@@ -39,7 +39,7 @@ These are initial implementation defaults, not claims that the owner individuall
 
 The cloud database migration was applied during subsequent sign-in troubleshooting (see below). Real Google browser authentication, database transactions, and cross-device cloud persistence have not been exercised end to end. The account UI stays unavailable until Google credentials are configured. These remain release gates, not completed tests.
 
-OpenRouter has a server-only client foundation. No user-facing workflow invokes AI or consumes credits yet. The UI labels AI as planned.
+OpenRouter now powers a notes-to-cards workflow with editable draft approval; see the enhancement below.
 
 ## Interface refinement: themes and sign-in
 
@@ -71,11 +71,21 @@ During development sign-in troubleshooting, the initial migration was applied to
 
 ## Rich cards, deck identity, and component structure
 
-- shadcn Select, Dropdown Menu, Dialog, and Button primitives retain the existing color system and layout. All UI icon glyphs now come from Lucide React; decorative sign-in line artwork remains SVG.
-- A lazy-loaded Tiptap editor supports formatting on both card sides. Preferences select Simple or Rich / advanced. Existing rich content renders safely as React elements without raw HTML injection. Simple edits preserve answer images and unchanged formatting.
+- shadcn Select, Dropdown Menu, Dialog, and Button primitives retain the existing color system and layout. UI icon glyphs come from Lucide React; the restored Recall brand mark and decorative sign-in line artwork are dedicated SVGs.
+- A lazy-loaded Tiptap editor supports formatting on both card sides. Preferences select Focus or Canvas. Existing rich content renders safely as React elements without raw HTML injection. Focus edits preserve answer images and unchanged formatting.
 - Deck identity supports a Lucide icon and optional Cloudinary cover. Authenticated answer/cover uploads have server-side file validation, size bounds, and per-user hourly limits.
-- Additive rich-content/media migration has been applied to the configured development database. Existing preview data defaults to Simple mode and the cards icon.
+- Additive rich-content/media migration has been applied to the configured development database. Existing preview data defaults to Focus mode and the cards icon.
 - Page copy comes from six local variants that rotate on full refresh. No AI requests are involved.
 - The monolithic workspace was split into a controller hook, provider, navigation, pages, dialogs, editors, and review components.
-- Verification: 24 unit tests, typecheck, ESLint, and Webpack production build. Browser preview checks covered rich card creation, saved authoring preference, and the icon dropdown inside an editing dialog.
-- Cloudinary and OpenRouter credentials are absent in this environment; live uploads and AI completions remain unverified. No AI workflow has been selected or exposed.
+- Verification: 29 unit tests, typecheck, ESLint, and Webpack production build. Browser preview checks covered rich card creation, saved authoring preference, and the icon dropdown inside an editing dialog.
+- Cloudinary and OpenRouter provider connectivity has been verified with generated test content. The new notes-to-cards workflow is implemented; the authenticated browser flow remains to be exercised.
+
+## Collection editor and AI drafting enhancement
+
+- Restored the original stacked-note Recall logo in the sidebar, mobile header, startup, sign-in, and favicon; a standalone SVG is in `public/brand`. General flashcard icons use Lucide GalleryVerticalEnd.
+- Deck editing offers a cover dropzone, file picker, editable icon badge, image replacement/removal, and accent choice. All image entry uses file uploads; there is no image URL field.
+- Authoring modes are named Focus and Canvas. The persisted `simple`/`rich` values stay compatible with existing accounts and preview storage.
+- shadcn Sonner handles save notices; errors keep inline recovery. shadcn Card/Chart shows seven days of real reviews in the learner's timezone. No sample activity is fabricated. Charts have no bar animation and load separately.
+- shadcn Tabs switch between the card list and a lazy table view with search, sorting, pagination, and edit/delete actions. Attachment filenames use a Badge; draft selection uses Checkbox.
+- AI drafting sends supplied notes to OpenRouter, validates structured output, allows editing/selection, and saves only after explicit approval. Authentication, ownership, bounded input/output, a per-user rolling quota, and stable batch IDs protect the flow. Original notes remain accessible on saved AI cards.
+- The additive AI request/source migration has been applied to development Neon. OpenRouter returned three validated drafts from sample study notes in a live provider check. Cloudinary accepted a generated PNG, which was then removed. Full signed-in browser generation/upload flows remain to be exercised. Unit tests also use fixed response fixtures.

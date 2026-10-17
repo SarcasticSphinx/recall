@@ -1,5 +1,9 @@
 "use client";
 import { useWorkspace } from "./workspace-context";
+import dynamic from "next/dynamic";
+const AiDrafts = dynamic(() => import("./ai-drafts").then((m) => m.AiDrafts), {
+  loading: () => <p className="form-hint">Opening your drafting desk…</p>,
+});
 import { Modal } from "./modal";
 import { Feedback } from "./feedback";
 import { CardEditor } from "./card-editor";
@@ -30,7 +34,9 @@ export function WorkspaceDialogs() {
           : "One good question."
         : modal.type === "delete"
           ? `Delete this ${modal.kind}?`
-          : "A little space for your mind.";
+          : modal.type === "ai"
+            ? "From notes to knowledge."
+            : "A little space for your mind.";
   return (
     <Modal
       variant={modal.type === "signin" ? "signin" : undefined}
@@ -43,6 +49,7 @@ export function WorkspaceDialogs() {
       }}
     >
       {error && <Feedback />}
+      {modal.type === "ai" && <AiDrafts deckId={modal.deckId} />}
       {modal.type === "deck" && <DeckEditor deck={modal.deck} />}
       {modal.type === "card" && (
         <CardEditor card={modal.card} deckId={modal.deckId} />

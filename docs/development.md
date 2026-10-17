@@ -18,7 +18,7 @@ The initial npm audit reports five high-severity entries in the development-only
 
 Configure `DATABASE_URL` for runtime queries and `DIRECT_URL` for migrations. The initial schema and SQL migration are in `prisma/`. Review the target database and migration, then run `npm run db:deploy`. Run `npm run db:generate` after schema changes. Installation generates the client automatically but does not apply migrations. For later local schema work, use `npm run db:migrate -- --name descriptive_name`.
 
-Both committed migrations have been applied to the configured development Neon database. Do not run `migrate reset` against a shared database.
+All three committed migrations have been applied to the configured development Neon database. Do not run `migrate reset` against a shared database.
 
 ### Google and Better Auth
 
@@ -30,7 +30,11 @@ The signed-out preview saves to browser storage. Signed-in accounts use `/api/wo
 
 ### AI
 
-Set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` (an OpenRouter model ID) in the server environment. `src/lib/ai/openrouter.ts` provides a timeout-bound chat completion client. No UI or API feature calls it yet: choose the first workflow and implement usage limits, draft approval, and error recovery before exposing it. Never use `NEXT_PUBLIC_` variables for keys.
+Set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` (an OpenRouter model ID supporting structured outputs) in the server environment, then restart. The notes-to-cards flow calls `/api/ai/drafts`: signed-in users can generate up to five editable drafts from 80–12,000 characters of notes. Each user has five generation attempts per rolling 24 hours, reserved transactionally before the provider call; failed attempts count too. Requests cap output at 2,200 tokens and time out after 30 seconds. No automatic retry incurs a second charge.
+
+Notes are sent to OpenRouter and the configured downstream provider only after the user clicks Generate. Source notes are stored in the account and attached to saved cards. They are not logged. Validate drafts against the source before selecting and saving them. Batch save uses stable card UUIDs to avoid duplicates after a lost response. AI cannot upload images, call tools, or modify existing cards. Set provider/account credit limits before deployment; application quotas are per user, not a global monetary cap. Never use `NEXT_PUBLIC_` variables for keys.
+
+The configured OpenRouter model returned three valid drafts in a live sample-notes check. Cloudinary also passed a generated-image upload and test-asset cleanup check. Authenticated browser generation/upload flows still need end-to-end verification. Unsupported models fail with notes kept in the dialog. Close or reload intentionally discards unsaved notes/drafts; no automatic local or cloud draft backup is implemented.
 
 ## Implementation milestones
 
@@ -47,7 +51,7 @@ This is a starting sequence, not a fixed delivery schedule.
 
 Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in the server environment, then restart. No unsigned upload preset is needed. The authenticated `/api/uploads` endpoint validates JPEG/PNG/WebP content, limits each image to 5 MB and uploads to `recall/<account-id>`. Images are resized to a maximum of 1600 × 1600. Accounts may upload 30 images per hour. Browser preview cannot upload media.
 
-Cloudinary delivery URLs are public: use images appropriate for public delivery. Removing a cover/card reference does not delete its Cloudinary asset. Asset retention and cleanup of abandoned uploads remain follow-up work. Live upload verification requires credentials, which are not included in the repository.
+Cloudinary delivery URLs are public: use images appropriate for public delivery. Removing a cover/card reference does not delete its Cloudinary asset. Asset retention and cleanup of abandoned uploads remain follow-up work. A generated test image passed the live Cloudinary upload/cleanup check; the signed-in browser upload flow remains to be verified. Credentials are not included in the repository.
 
 ## Interface structure
 

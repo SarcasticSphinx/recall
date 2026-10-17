@@ -136,8 +136,7 @@ export function CardEditor({
       </div>
       {!rich && (
         <p className="form-hint">
-          Choose Rich / advanced in Preferences for formatting and answer
-          images.
+          Choose Canvas in Preferences for formatting and answer images.
           {(card?.questionRich || card?.answerRich) &&
             " Existing formatting is kept for unchanged fields; changed text becomes plain, and attached images are preserved."}
         </p>

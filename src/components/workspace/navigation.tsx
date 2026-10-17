@@ -1,4 +1,5 @@
 "use client";
+import { RecallMark } from "@/components/recall-mark";
 import { useWorkspace } from "./workspace-context";
 import Link from "next/link";
 import type { CSSProperties } from "react";
@@ -20,7 +21,7 @@ export function WorkspaceNavigation() {
     <aside className="sidebar">
       <Link className="brand" href="/" aria-label="Recall home">
         <span className="brand-mark">
-          <Icon name="cards" size={25} />
+          <RecallMark size={25} />
         </span>
         recall<span className="brand-dot">.</span>
       </Link>

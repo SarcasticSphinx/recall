@@ -22,7 +22,7 @@ import {
   Plus,
   SlidersHorizontal,
   Sparkles,
-  SquareStack,
+  GalleryVerticalEnd,
   Sun,
   Target,
   Trash2,
@@ -31,7 +31,7 @@ import {
   type LucideProps,
 } from "lucide-react";
 const icons: Record<string, LucideIcon> = {
-  cards: SquareStack,
+  cards: GalleryVerticalEnd,
   sun: Sun,
   moon: Moon,
   monitor: Monitor,
@@ -65,7 +65,7 @@ export function Icon({
   size = 20,
   ...props
 }: LucideProps & { name: string }) {
-  const Component = icons[name] || SquareStack;
+  const Component = icons[name] || GalleryVerticalEnd;
   return (
     <Component size={size} strokeWidth={1.6} aria-hidden="true" {...props} />
   );

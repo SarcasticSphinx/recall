@@ -100,9 +100,8 @@ export function PreferencesPage() {
           <div>
             <h3>Card editor</h3>
             <p>
-              Simple keeps writing focused. Rich / advanced adds formatting and
-              answer images. Your saved formatting is always shown during
-              review.
+              Focus is a clean writing space. Canvas adds formatting and answer
+              images. Your saved formatting is always shown during review.
             </p>
           </div>
           <Select
@@ -113,8 +112,8 @@ export function PreferencesPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent position="popper">
-              <SelectItem value="simple">Simple</SelectItem>
-              <SelectItem value="rich">Rich / advanced</SelectItem>
+              <SelectItem value="simple">Focus</SelectItem>
+              <SelectItem value="rich">Canvas</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -159,10 +158,10 @@ export function PreferencesPage() {
         <div>
           <h3>A little help, when you need it.</h3>
           <p>
-            AI assistance will use OpenRouter. We&apos;re starting with the
-            essentials: your questions, your answers, your practice.
+            Open any deck and choose Draft with AI to turn your notes into
+            editable flashcards. You review every question before saving.
           </p>
-          <span className="pill">PLANNED</span>
+          <span className="pill">NOTES → CARDS</span>
         </div>
       </section>
     </>
