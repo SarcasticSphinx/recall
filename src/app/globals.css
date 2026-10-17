@@ -4240,7 +4240,7 @@ kbd {
   margin-top: 5px;
 }
 .install-panel {
-  margin-top: 24px;
+  margin: 24px 0;
   border: 1px solid var(--line);
   padding: 24px;
   border-radius: 12px;
@@ -4364,4 +4364,43 @@ kbd {
   .review-picker-footer > p {
     margin-top: 5px;
   }
+}
+
+.install-dialog[data-slot="dialog-content"] {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--line);
+  width: min(480px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+.install-dialog [data-slot="dialog-title"] {
+  font:
+    28px/1.2 Georgia,
+    serif;
+}
+.install-dialog [data-slot="dialog-description"] {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.install-device-steps {
+  display: grid;
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.install-device-steps li {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.install-device-steps strong {
+  font-weight: 600;
+}
+.install-device-steps p {
+  color: var(--muted);
+  margin-top: 4px;
 }

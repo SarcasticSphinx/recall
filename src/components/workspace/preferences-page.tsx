@@ -35,6 +35,7 @@ export function PreferencesPage() {
           Saved on this device. System follows your device’s appearance.
         </p>
       </section>
+      <InstallPanel />
       <form
         className="settings-panel"
         key={`${workspace.preferences.timezone}-${workspace.preferences.newCardLimit}`}
@@ -125,7 +126,6 @@ export function PreferencesPage() {
           </button>
         </div>
       </form>
-      <InstallPanel />
       <section className="account-panel">
         <div>
           <h3>{isPreview ? "Take your learning with you." : user?.name}</h3>

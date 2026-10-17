@@ -83,3 +83,17 @@ test("worker caches public assets only and falls back offline without caching ac
   handlers.fetch({ request, respondWith: (p) => (wait = p) });
   assert.equal(await wait, fallback);
 });
+
+test("Preferences always offers an install action before a browser prompt is available", async () => {
+  const React = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { PwaProvider } =
+    await import("../src/components/pwa/pwa-provider.tsx");
+  const { InstallPanel } =
+    await import("../src/components/pwa/install-panel.tsx");
+  const html = renderToStaticMarkup(
+    React.createElement(PwaProvider, null, React.createElement(InstallPanel)),
+  );
+  assert.match(html, /<button[^>]*>[\s\S]*?Install Recall<\/button>/);
+  assert.doesNotMatch(html, /<button[^>]*\sdisabled(?:=|[\s>])/);
+});

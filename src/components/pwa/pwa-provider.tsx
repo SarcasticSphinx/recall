@@ -38,7 +38,7 @@ const Context = createContext<{
   installed: boolean;
   canInstall: boolean;
   updateReady: boolean;
-  install: () => Promise<void>;
+  install: () => Promise<"accepted" | "dismissed" | "unavailable" | "failed">;
   update: () => void;
 } | null>(null);
 export function PwaProvider({ children }: { children: ReactNode }) {
@@ -53,6 +53,7 @@ export function PwaProvider({ children }: { children: ReactNode }) {
     () => false,
   );
   const [installEvent, setInstallEvent] = useState<InstallEvent | null>(null);
+  const [installedThisVisit, setInstalledThisVisit] = useState(false);
   const [updateReady, setUpdateReady] = useState(false);
   const registration = useRef<ServiceWorkerRegistration | null>(null);
   const reload = useRef(false);
@@ -61,9 +62,16 @@ export function PwaProvider({ children }: { children: ReactNode }) {
       event.preventDefault();
       setInstallEvent(event as InstallEvent);
     };
+    const onInstalled = () => {
+      setInstalledThisVisit(true);
+      setInstallEvent(null);
+    };
     window.addEventListener("beforeinstallprompt", beforeInstall);
-    return () =>
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
       window.removeEventListener("beforeinstallprompt", beforeInstall);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
   }, []);
   useEffect(() => {
     // Keep the browser bar matched to Recall's selected theme, including manual changes.
@@ -141,11 +149,18 @@ export function PwaProvider({ children }: { children: ReactNode }) {
       );
     };
   }, []);
-  async function install() {
-    if (!installEvent) return;
-    await installEvent.prompt();
-    await installEvent.userChoice;
+  async function install(): Promise<
+    "accepted" | "dismissed" | "unavailable" | "failed"
+  > {
+    if (!installEvent) return "unavailable";
+    // A browser-provided prompt can only be used once.
     setInstallEvent(null);
+    try {
+      await installEvent.prompt();
+      return (await installEvent.userChoice).outcome;
+    } catch {
+      return "failed";
+    }
   }
   function update() {
     const waiting = registration.current?.waiting;
@@ -158,8 +173,8 @@ export function PwaProvider({ children }: { children: ReactNode }) {
     <Context.Provider
       value={{
         online,
-        installed,
-        canInstall: Boolean(installEvent) && !installed,
+        installed: installed || installedThisVisit,
+        canInstall: Boolean(installEvent) && !installed && !installedThisVisit,
         updateReady,
         install,
         update,
