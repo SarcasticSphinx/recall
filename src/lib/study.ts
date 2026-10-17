@@ -1,3 +1,4 @@
+import type { RichNode } from "./rich-content";
 import { createEmptyCard, fsrs, type Card, type Grade } from "ts-fsrs";
 
 export type Schedule = Omit<Card, "due" | "last_review"> & {
@@ -9,11 +10,19 @@ export type StudyCard = {
   deckId: string;
   question: string;
   answer: string;
+  questionRich?: RichNode | null;
+  answerRich?: RichNode | null;
   schedule: Schedule;
   version: number;
   createdAt: string;
 };
-export type Deck = { id: string; name: string; color: string };
+export type Deck = {
+  id: string;
+  name: string;
+  color: string;
+  icon?: string;
+  imageUrl?: string | null;
+};
 export type ReviewEvent = {
   operationId: string;
   cardId: string | null;
@@ -26,7 +35,11 @@ export type Workspace = {
   decks: Deck[];
   cards: StudyCard[];
   reviews: ReviewEvent[];
-  preferences: { timezone: string; newCardLimit: number };
+  preferences: {
+    timezone: string;
+    newCardLimit: number;
+    editorMode?: "simple" | "rich";
+  };
 };
 
 // Fixed defaults make scheduling reproducible. Personal optimization is deferred.

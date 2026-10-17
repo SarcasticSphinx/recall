@@ -73,11 +73,22 @@ export function applyPreview(
         id: crypto.randomUUID(),
         name: action.name,
         color: action.color,
+        icon: action.icon || "cards",
+        imageUrl: action.imageUrl || null,
       });
       break;
     case "updateDeck":
       next.decks = next.decks.map((d) =>
-        d.id === action.id ? { ...d, name: action.name } : d,
+        d.id === action.id
+          ? {
+              ...d,
+              name: action.name,
+              color: action.color || d.color,
+              icon: action.icon || d.icon,
+              imageUrl:
+                action.imageUrl === undefined ? d.imageUrl : action.imageUrl,
+            }
+          : d,
       );
       break;
     case "deleteDeck": {
@@ -97,6 +108,8 @@ export function applyPreview(
         deckId: action.deckId,
         question: action.question,
         answer: action.answer,
+        questionRich: action.questionRich || null,
+        answerRich: action.answerRich || null,
         schedule: newSchedule(),
         version: 0,
         createdAt: new Date().toISOString(),
@@ -109,6 +122,8 @@ export function applyPreview(
       Object.assign(card, {
         question: action.question,
         answer: action.answer,
+        questionRich: action.questionRich || null,
+        answerRich: action.answerRich || null,
         version: card.version + 1,
       });
       break;
@@ -123,6 +138,8 @@ export function applyPreview(
       next.preferences = {
         timezone: action.timezone,
         newCardLimit: action.newCardLimit,
+        editorMode:
+          action.editorMode || next.preferences.editorMode || "simple",
       };
       break;
     case "review": {

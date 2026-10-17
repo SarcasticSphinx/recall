@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { RecallApp } from "@/components/recall-app";
 import { getAuth, isAuthConfigured } from "@/lib/auth";
+import { hasCloudinary } from "@/lib/cloudinary";
 import { loadWorkspace } from "@/lib/workspace-server";
 
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ export default async function Home() {
   }
   return (
     <RecallApp
+      uploadsEnabled={hasCloudinary()}
       user={user}
       initialWorkspace={initialWorkspace}
       authEnabled={authEnabled}

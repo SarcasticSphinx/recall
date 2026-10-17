@@ -39,7 +39,7 @@ These are initial implementation defaults, not claims that the owner individuall
 
 The cloud database migration was applied during subsequent sign-in troubleshooting (see below). Real Google browser authentication, database transactions, and cross-device cloud persistence have not been exercised end to end. The account UI stays unavailable until Google credentials are configured. These remain release gates, not completed tests.
 
-AI has no provider calls or API-key usage in this slice. The UI labels AI as planned.
+OpenRouter has a server-only client foundation. No user-facing workflow invokes AI or consumes credits yet. The UI labels AI as planned.
 
 ## Interface refinement: themes and sign-in
 
@@ -68,3 +68,14 @@ During development sign-in troubleshooting, the initial migration was applied to
 - Button labels stay on one line. Heading actions move into their own row when necessary; card toolbars and dialog actions stack at the narrowest breakpoint instead of compressing labels.
 - The Today review action fills the available card width rather than sharing a narrow text column with decoration.
 - Browser checks covered the narrow mobile Today and deck views, theme switching, and unbroken New deck/review labels. No physical low-end-device performance benchmark was run.
+
+## Rich cards, deck identity, and component structure
+
+- shadcn Select, Dropdown Menu, Dialog, and Button primitives retain the existing color system and layout. All UI icon glyphs now come from Lucide React; decorative sign-in line artwork remains SVG.
+- A lazy-loaded Tiptap editor supports formatting on both card sides. Preferences select Simple or Rich / advanced. Existing rich content renders safely as React elements without raw HTML injection. Simple edits preserve answer images and unchanged formatting.
+- Deck identity supports a Lucide icon and optional Cloudinary cover. Authenticated answer/cover uploads have server-side file validation, size bounds, and per-user hourly limits.
+- Additive rich-content/media migration has been applied to the configured development database. Existing preview data defaults to Simple mode and the cards icon.
+- Page copy comes from six local variants that rotate on full refresh. No AI requests are involved.
+- The monolithic workspace was split into a controller hook, provider, navigation, pages, dialogs, editors, and review components.
+- Verification: 24 unit tests, typecheck, ESLint, and Webpack production build. Browser preview checks covered rich card creation, saved authoring preference, and the icon dropdown inside an editing dialog.
+- Cloudinary and OpenRouter credentials are absent in this environment; live uploads and AI completions remain unverified. No AI workflow has been selected or exposed.

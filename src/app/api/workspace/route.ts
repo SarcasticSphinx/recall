@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       throw new WorkspaceError("Request origin is not allowed.", 403);
     const id = await userId(request);
     const raw = await request.text();
-    if (raw.length > 20000)
+    if (raw.length > 150000)
       throw new WorkspaceError("This request is too large.", 413);
     let body: unknown;
     try {

@@ -63,7 +63,7 @@ The initial product assumes an internet connection and one owner per deck. Share
 | Installable web experience                   | Proposed            | Follow-up polish; scope decision pending   |
 | React Native app                             | Future              | Reuse backend when introduced              |
 
-Deferred features: offline reviewing and reconciliation, public/shared decks, collaboration, payments, rich-text authoring, image/file uploads, advanced analytics, streak systems, reminders, and complex gesture interactions. These exclusions do not rule them out permanently.
+Deferred features: offline reviewing and reconciliation, public/shared decks, collaboration, payments, general file uploads, advanced analytics, streak systems, reminders, and complex gesture interactions. These exclusions do not rule them out permanently.
 
 ## 5. Primary user journeys
 
@@ -100,15 +100,15 @@ Password registration, password resets, and additional providers are deferred. C
 
 ### 6.2 Decks and cards
 
-| ID      | Requirement                                                                                                | Status   |
-| ------- | ---------------------------------------------------------------------------------------------------------- | -------- |
-| DECK-01 | The learner shall be able to list, create, rename, and delete personal decks.                              | Baseline |
-| DECK-02 | Deck deletion shall require explicit confirmation describing its effect on cards and progress.             | Baseline |
-| CARD-01 | The learner shall be able to create, view, edit, and delete cards within a personal deck.                  | Baseline |
-| CARD-02 | Each initial card shall contain a nonempty plain-text question and answer.                                 | Baseline |
-| CARD-03 | The server shall validate input and return actionable validation errors.                                   | Baseline |
-| CARD-04 | Failed writes shall preserve entered text where feasible and shall not be presented as successful saves.   | Baseline |
-| CARD-05 | Ordinary text edits shall preserve scheduling history; an explicit reset feature is outside initial scope. | Proposed |
+| ID      | Requirement                                                                                                     | Status   |
+| ------- | --------------------------------------------------------------------------------------------------------------- | -------- |
+| DECK-01 | The learner shall be able to list, create, rename, and delete personal decks.                                   | Baseline |
+| DECK-02 | Deck deletion shall require explicit confirmation describing its effect on cards and progress.                  | Baseline |
+| CARD-01 | The learner shall be able to create, view, edit, and delete cards within a personal deck.                       | Baseline |
+| CARD-02 | Each card shall have a nonempty question and answer content; rich answers may contain an image instead of text. | Baseline |
+| CARD-03 | The server shall validate input and return actionable validation errors.                                        | Baseline |
+| CARD-04 | Failed writes shall preserve entered text where feasible and shall not be presented as successful saves.        | Baseline |
+| CARD-05 | Ordinary text edits shall preserve scheduling history; an explicit reset feature is outside initial scope.      | Proposed |
 
 Maximum field lengths, deletion retention, and the treatment of history after deletion must be finalized before the schema and destructive operations are implemented.
 
@@ -147,7 +147,7 @@ The default daily limit and timezone-change behavior are undecided. A session's 
 
 ## 7. AI requirements and decision boundary
 
-AI is an important product direction. The owner intends to explore existing OpenAI credits and may consider other models. Credit eligibility, balance, provider availability, and pricing are not assumed by this specification.
+OpenRouter is the selected AI provider. A configurable server-only client is implemented; the first user-facing AI workflow and model remain undecided. Availability and pricing must be checked when choosing the model.
 
 | Candidate                 | Intended value                             | Status                       |
 | ------------------------- | ------------------------------------------ | ---------------------------- |
@@ -169,7 +169,7 @@ The following requirements become mandatory for any AI workflow selected for imp
 | AI-07 | Core manual card creation and reviewing shall remain usable when AI is unavailable.                                   |
 | AI-08 | Source-derived cards shall retain a source reference where available so the learner can check the answer.             |
 
-No AI provider, model, free-tier assumption, SDK, vector database, chatbot, or autonomous agent framework is mandated. Input/output limits, cost allowance, retries, source retention, and AI quality evaluation criteria must be selected with the first workflow.
+OpenRouter is confirmed; no model, free-tier assumption, SDK, vector database, chatbot, or autonomous agent framework is mandated. Input/output limits, cost allowance, retries, source retention, and AI quality evaluation criteria must be selected with the first workflow.
 
 ## 8. Interface and interaction requirements
 
@@ -300,7 +300,7 @@ The first complete product milestone is creating a deck on Mac, reviewing it on 
 
 | ID      | Decision needed                                                                      | Resolve before                             |
 | ------- | ------------------------------------------------------------------------------------ | ------------------------------------------ |
-| OPEN-01 | First AI workflow, model/provider, and whether it ships with the initial release     | AI implementation and release scope freeze |
+| OPEN-01 | First AI workflow, model, and whether it ships with the initial release              | AI implementation and release scope freeze |
 | OPEN-02 | AI quotas, spend allowance, input limits, retries, and output quality criteria       | Billable AI requests                       |
 | OPEN-03 | Default daily limit, timezone initialization/change behavior, and queue ordering     | Scheduler and Today implementation         |
 | OPEN-04 | FSRS initial settings and learning/relearning behavior                               | Scheduling acceptance tests                |
@@ -317,3 +317,13 @@ The first complete product milestone is creating a deck on Mac, reviewing it on 
 - [Development setup](development.md)
 
 This SRS is the consolidated requirements baseline. Keep the shorter companion documents aligned with it. Record scope changes by updating the relevant requirement/status and document version; do not treat proposed features as approved solely because they appear here.
+
+## Rich authoring and media revision — 17 October 2026
+
+- Preferences shall offer Simple and Rich / advanced authoring. Both question and answer support rich formatting; existing formatting remains visible in either preference.
+- Rich answers may attach Cloudinary images. Questions do not accept images. Uploads require an authenticated account and configured server credentials.
+- Decks may use a selected Lucide icon or a Cloudinary cover image. A cover takes visual precedence over the icon.
+- Uploads accept JPEG, PNG, or WebP up to 5 MB, validate file content on the server, and allow at most 30 uploads per account per hour.
+- Interface controls use Lucide React icons. Dropdowns, selects, and editing dialogs use shadcn components while retaining the established appearance.
+- Page headings and supporting copy rotate from a local copy library on refresh; copy requires no AI calls.
+- Workspace state, navigation, pages, editing, and review shall be maintained as focused components and hooks.

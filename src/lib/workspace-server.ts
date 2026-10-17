@@ -8,6 +8,7 @@ import {
   type Schedule,
   type Workspace,
 } from "./study";
+import type { RichNode } from "./rich-content";
 import type { WorkspaceAction } from "./validation";
 
 export class WorkspaceError extends Error {
@@ -28,7 +29,7 @@ export async function loadWorkspace(
   const [user, decks, reviews] = await Promise.all([
     db.user.findUniqueOrThrow({
       where: { id: userId },
-      select: { timezone: true, newCardLimit: true },
+      select: { timezone: true, newCardLimit: true, editorMode: true },
     }),
     db.deck.findMany({
       where: { userId },
@@ -44,13 +45,21 @@ export async function loadWorkspace(
     }),
   ]);
   return {
-    decks: decks.map(({ id, name, color }) => ({ id, name, color })),
+    decks: decks.map(({ id, name, color, icon, imageUrl }) => ({
+      id,
+      name,
+      color,
+      icon,
+      imageUrl,
+    })),
     cards: decks.flatMap((deck) =>
       deck.cards.map((card) => ({
         id: card.id,
         deckId: deck.id,
         question: card.question,
         answer: card.answer,
+        questionRich: card.questionRich as RichNode | null,
+        answerRich: card.answerRich as RichNode | null,
         schedule: card.schedule as Schedule,
         version: card.version,
         createdAt: card.createdAt.toISOString(),
@@ -64,7 +73,10 @@ export async function loadWorkspace(
       wasNew: r.wasNew,
       reviewedAt: r.reviewedAt.toISOString(),
     })),
-    preferences: user,
+    preferences: {
+      ...user,
+      editorMode: user.editorMode === "rich" ? "rich" : "simple",
+    },
   };
 }
 
@@ -82,13 +94,24 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
   switch (action.type) {
     case "createDeck":
       await db.deck.create({
-        data: { userId, name: action.name, color: action.color },
+        data: {
+          userId,
+          name: action.name,
+          color: action.color,
+          icon: action.icon,
+          imageUrl: action.imageUrl,
+        },
       });
       break;
     case "updateDeck": {
       const result = await db.deck.updateMany({
         where: { id: action.id, userId },
-        data: { name: action.name },
+        data: {
+          name: action.name,
+          color: action.color,
+          icon: action.icon,
+          imageUrl: action.imageUrl,
+        },
       });
       if (!result.count) throw new WorkspaceError("Deck not found.", 404);
       break;
@@ -107,6 +130,12 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
           deckId: action.deckId,
           question: action.question,
           answer: action.answer,
+          questionRich: action.questionRich
+            ? json(action.questionRich)
+            : Prisma.DbNull,
+          answerRich: action.answerRich
+            ? json(action.answerRich)
+            : Prisma.DbNull,
           schedule: json(newSchedule()),
         },
       });
@@ -117,6 +146,12 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
         data: {
           question: action.question,
           answer: action.answer,
+          questionRich: action.questionRich
+            ? json(action.questionRich)
+            : Prisma.DbNull,
+          answerRich: action.answerRich
+            ? json(action.answerRich)
+            : Prisma.DbNull,
           version: { increment: 1 },
         },
       });
@@ -142,6 +177,7 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
           data: {
             timezone: action.timezone,
             newCardLimit: action.newCardLimit,
+            editorMode: action.editorMode,
           },
         });
       });
@@ -200,7 +236,10 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
           const workspace: Workspace = {
             cards: [current],
             decks: [],
-            preferences: user,
+            preferences: {
+              ...user,
+              editorMode: user.editorMode === "rich" ? "rich" : "simple",
+            },
             reviews: recent.map((r) => ({
               ...r,
               reviewedAt: r.reviewedAt.toISOString(),

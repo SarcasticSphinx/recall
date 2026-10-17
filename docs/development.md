@@ -18,7 +18,7 @@ The initial npm audit reports five high-severity entries in the development-only
 
 Configure `DATABASE_URL` for runtime queries and `DIRECT_URL` for migrations. The initial schema and SQL migration are in `prisma/`. Review the target database and migration, then run `npm run db:deploy`. Run `npm run db:generate` after schema changes. Installation generates the client automatically but does not apply migrations. For later local schema work, use `npm run db:migrate -- --name descriptive_name`.
 
-The initial migration has not been applied to the owner's database. Do not run `migrate reset` against a shared database.
+Both committed migrations have been applied to the configured development Neon database. Do not run `migrate reset` against a shared database.
 
 ### Google and Better Auth
 
@@ -30,7 +30,7 @@ The signed-out preview saves to browser storage. Signed-in accounts use `/api/wo
 
 ### AI
 
-Choose the first workflow before selecting a model or installing an SDK. Store credentials on the server; never use `NEXT_PUBLIC_` variables for keys.
+Set `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` (an OpenRouter model ID) in the server environment. `src/lib/ai/openrouter.ts` provides a timeout-bound chat completion client. No UI or API feature calls it yet: choose the first workflow and implement usage limits, draft approval, and error recovery before exposing it. Never use `NEXT_PUBLIC_` variables for keys.
 
 ## Implementation milestones
 
@@ -42,3 +42,13 @@ Choose the first workflow before selecting a model or installing an SDK. Store c
 6. Add the selected AI workflow, installation support, and deployment.
 
 This is a starting sequence, not a fixed delivery schedule.
+
+## Cloudinary media
+
+Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in the server environment, then restart. No unsigned upload preset is needed. The authenticated `/api/uploads` endpoint validates JPEG/PNG/WebP content, limits each image to 5 MB and uploads to `recall/<account-id>`. Images are resized to a maximum of 1600 × 1600. Accounts may upload 30 images per hour. Browser preview cannot upload media.
+
+Cloudinary delivery URLs are public: use images appropriate for public delivery. Removing a cover/card reference does not delete its Cloudinary asset. Asset retention and cleanup of abandoned uploads remain follow-up work. Live upload verification requires credentials, which are not included in the repository.
+
+## Interface structure
+
+`recall-app.tsx` composes the workspace provider and shell. Page/layout/editor components live in `src/components/workspace`; shared rich authoring lives in `src/components/editor`. State and actions live in `src/hooks/use-workspace-controller.ts`. shadcn primitives live in `src/components/ui` and use the existing theme tokens. Edit refresh copy in `src/lib/page-copy.ts`.

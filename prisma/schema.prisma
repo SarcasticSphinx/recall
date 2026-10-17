@@ -19,8 +19,10 @@ model User {
   accounts      Account[]
   decks         Deck[]
   reviews       Review[]
+  imageUploads  ImageUpload[]
   timezone      String    @default("UTC")
   newCardLimit  Int       @default(20)
+  editorMode    String    @default("simple")
 
   @@map("user")
 }
@@ -79,6 +81,8 @@ model Deck {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String
   color     String   @default("indigo")
+  icon      String   @default("cards")
+  imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   cards     Card[]
@@ -92,6 +96,8 @@ model Card {
   deck            Deck      @relation(fields: [deckId], references: [id], onDelete: Cascade)
   question        String
   answer          String
+  questionRich    Json?
+  answerRich      Json?
   schedule        Json
   due             DateTime  @default(now())
   repetitions     Int       @default(0)
@@ -118,4 +124,13 @@ model Review {
 
   @@unique([userId, operationId])
   @@index([userId, reviewedAt])
+}
+
+model ImageUpload {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
 }
