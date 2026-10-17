@@ -121,3 +121,11 @@ Validation: 41 unit/regression tests cover schedule invariants, retry/mode colli
 The install action is always visible near the top of Preferences, even when `beforeinstallprompt` is unsupported, delayed, or dismissed. A native prompt is used when available; otherwise a shadcn dialog explains Safari home-screen/Dock and Chromium installation. Failed prompts fall back to the same guidance. Installation events clear the consumed prompt and show installed state for the current visit. A server-rendered regression test guards against hiding the button before an install event.
 
 Native installation is invoked directly from the button only when a real browser install event is available; installation always requires browser confirmation. Safari exposes no programmatic PWA install prompt. The fallback now shows only the current platform's steps (including iPad desktop user agents), with explicit Safari menu instructions. Manifest app name is Recall. Replaced the scaffold favicon.ico with 16/32/48px brand assets, matching the existing SVG favicon and home-screen icons.
+
+### Mobile dock and shadcn review surfaces
+
+The mobile dock rests against the bottom safe area. A full-width translucent layer covers the dock margins and home-indicator region, intercepting pointer input so page content cannot be tapped through that space; content retains bottom scroll clearance.
+
+The review picker and full-screen study session use shadcn Sheets with open/close presence retained until the exit animation finishes. Added the missing `tw-animate-css` import that activates shadcn's fade and slide classes, with 250ms entrance, 200ms exit, and reduced-motion overrides. The review session uses shadcn Card, Badge, Button, Progress, and ScrollArea. Focus returns to the initiating control where available; Escape respects pending saves. Progress exposes an accessible value and card-count description.
+
+Verified in the browser at 390×844 and 360×640: bottom-edge hit testing resolves to the dock shield, the dock reaches the viewport bottom, the picker reports the active entrance animation, keyboard Space/1–4 still works, one-card free practice saves and reaches 100%, and Escape closes the session with focus restoration. All 44 existing regression tests pass, including rich card images and unchanged scheduling behavior.

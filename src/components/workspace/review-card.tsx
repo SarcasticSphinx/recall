@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/card";
 import type { StudyCard } from "@/lib/study";
 import { RichContent } from "@/components/editor/rich-content";
 import { Icon } from "@/components/icon";
@@ -9,7 +10,8 @@ export function ReviewCard({
   revealed: boolean;
 }) {
   return (
-    <article
+    <Card
+      role="article"
       className={`review-card ${revealed ? "is-revealed" : ""}`}
       key={card.id}
     >
@@ -37,6 +39,6 @@ export function ReviewCard({
           <p>Let the answer come to you.</p>
         </div>
       )}
-    </article>
+    </Card>
   );
 }

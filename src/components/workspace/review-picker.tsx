@@ -39,6 +39,7 @@ import { studyQueue } from "@/lib/study";
 import { useWorkspace } from "./workspace-context";
 export function ReviewPicker({ deckId }: { deckId?: string }) {
   const { workspace, setReviewPicker, startCustomStudy } = useWorkspace();
+  const [open, setOpen] = useState(true);
   const [mode, setMode] = useState<ReviewMode>(
     studyQueue(workspace, deckId).length ? "scheduled" : "practice",
   );
@@ -73,13 +74,12 @@ export function ReviewPicker({ deckId }: { deckId?: string }) {
     setSelection(next);
   }
   return (
-    <Sheet
-      open
-      onOpenChange={(open) => {
-        if (!open) setReviewPicker(null);
-      }}
-    >
-      <SheetContent side="right" className="review-picker">
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetContent
+        side="right"
+        className="review-picker"
+        onCloseAutoFocus={() => setReviewPicker(null)}
+      >
         <SheetHeader>
           <span className="eyebrow">YOUR NEXT SESSION</span>
           <SheetTitle>What would you like to study?</SheetTitle>

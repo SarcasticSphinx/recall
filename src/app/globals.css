@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
   --canvas: #faf9f6;
@@ -2664,6 +2665,7 @@ kbd {
 .theme-control button[aria-pressed="true"] > svg {
   transform: rotate(-8deg);
 }
+.mobile-dock-backdrop,
 .mobile-brand,
 .mobile-sync-label,
 .dock-selection {
@@ -4403,4 +4405,90 @@ kbd {
 .install-device-steps p {
   color: var(--muted);
   margin-top: 4px;
+}
+
+/* The bottom safe area belongs to navigation, never to the page behind it. */
+@media (max-width: 640px) {
+  .mobile-dock-backdrop {
+    display: block;
+    position: fixed;
+    inset: auto 0 0;
+    height: calc(62px + env(safe-area-inset-bottom));
+    z-index: 19;
+    background: color-mix(in srgb, var(--canvas) 92%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    pointer-events: auto;
+    touch-action: none;
+  }
+  .sidebar {
+    bottom: env(safe-area-inset-bottom);
+  }
+  .main-shell {
+    padding-bottom: calc(82px + env(safe-area-inset-bottom));
+  }
+}
+
+.study-overlay[data-slot="sheet-content"] {
+  outline: none;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  gap: 0;
+  overflow: hidden;
+  z-index: 70;
+}
+.study-overlay .study-header {
+  flex-shrink: 0;
+}
+.study-overlay .study-progress {
+  flex-shrink: 0;
+  border-radius: 0;
+}
+.study-progress [data-slot="progress-indicator"] {
+  background: #9b9abb;
+  transition: transform 180ms ease-out;
+}
+.study-scroll {
+  flex: 1;
+  min-height: 0;
+}
+.study-scroll [data-slot="scroll-area-thumb"] {
+  background: var(--line);
+}
+.study-body {
+  width: 100%;
+}
+.review-card[data-slot="card"] {
+  gap: 0;
+}
+.rating[data-slot="button"] {
+  height: auto;
+  min-height: 84px;
+  white-space: normal;
+}
+.study-overlay .study-header {
+  height: calc(80px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+}
+.study-scroll .study-body {
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+}
+@media (max-width: 640px) {
+  .study-overlay .study-header {
+    height: calc(70px + env(safe-area-inset-top));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="sheet-content"],
+  [data-slot="sheet-overlay"],
+  [data-slot="dialog-content"],
+  [data-slot="dialog-overlay"] {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+  .study-progress [data-slot="progress-indicator"] {
+    transition: none;
+  }
 }
