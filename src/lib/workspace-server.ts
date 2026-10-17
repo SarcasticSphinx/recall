@@ -77,6 +77,7 @@ export async function loadWorkspace(
       cardVersion: r.cardVersion,
       rating: r.rating,
       wasNew: r.wasNew,
+      mode: r.mode === "practice" ? "practice" : "scheduled",
       reviewedAt: r.reviewedAt.toISOString(),
     })),
     preferences: {
@@ -257,7 +258,8 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
             if (
               existing.cardId !== action.id ||
               existing.rating !== action.rating ||
-              existing.cardVersion !== action.version
+              existing.cardVersion !== action.version ||
+              existing.mode !== (action.mode || "scheduled")
             ) {
               throw new WorkspaceError(
                 "This review identifier has already been used.",
@@ -275,6 +277,22 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
               "This card changed on another device. Refresh to continue.",
               409,
             );
+          if (action.mode === "practice") {
+            await tx.review.create({
+              data: {
+                userId,
+                cardId: card.id,
+                operationId: action.operationId,
+                cardVersion: action.version,
+                rating: action.rating,
+                mode: "practice",
+                wasNew: false,
+                reviewedAt: new Date(),
+                nextSchedule: json(card.schedule),
+              },
+            });
+            return;
+          }
           const user = await tx.user.findUniqueOrThrow({
             where: { id: userId },
           });
@@ -303,6 +321,7 @@ export async function applyAction(userId: string, action: WorkspaceAction) {
             },
             reviews: recent.map((r) => ({
               ...r,
+              mode: r.mode === "practice" ? "practice" : "scheduled",
               reviewedAt: r.reviewedAt.toISOString(),
             })),
           };

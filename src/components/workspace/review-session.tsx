@@ -57,7 +57,14 @@ export function ReviewSession() {
           <Icon name="back" size={18} />
           Leave session
         </button>
-        <span>{session.title}</span>
+        <span>
+          {session.title}
+          <small className="session-mode-label">
+            {session.mode === "practice"
+              ? "Free practice · dates unchanged"
+              : "Scheduled review"}
+          </small>
+        </span>
         <span className="study-counter">
           {session.index} / {session.cards.length}
         </span>
@@ -94,7 +101,11 @@ export function ReviewSession() {
               className="button primary"
               onClick={() => {
                 setSession(null);
-                setNotice("Session complete. Your reviews are saved.");
+                setNotice(
+                  session.mode === "practice"
+                    ? "Practice saved. Your review dates are unchanged."
+                    : "Session complete. Your reviews are saved.",
+                );
               }}
             >
               Back to your day
@@ -112,7 +123,11 @@ export function ReviewSession() {
                   }
                 </span>
                 <span className="pill">
-                  {currentCard.schedule.reps === 0 ? "NEW CARD" : "REVIEW"}
+                  {session.mode === "practice"
+                    ? "FREE PRACTICE"
+                    : currentCard.schedule.reps === 0
+                      ? "NEW CARD"
+                      : "REVIEW"}
                 </span>
               </div>
               <ReviewCard card={currentCard} revealed={session.revealed} />
@@ -146,7 +161,14 @@ export function ReviewSession() {
                           <span className="rating-key">{i + 1}</span>
                           <strong>{label}</strong>
                           <span>
-                            {intervalLabel(currentCard.schedule, i + 1)}
+                            {session.mode === "practice"
+                              ? [
+                                  "Try again",
+                                  "A little unsure",
+                                  "Remembered",
+                                  "Effortless",
+                                ][i]
+                              : intervalLabel(currentCard.schedule, i + 1)}
                           </span>
                         </button>
                       ))}

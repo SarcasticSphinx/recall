@@ -86,6 +86,7 @@ export const actionSchema = z
     }),
     z.object({
       type: z.literal("review"),
+      mode: z.enum(["scheduled", "practice"]).optional(),
       id,
       version: z.number().int().nonnegative(),
       rating: z.number().int().min(1).max(4),
@@ -166,6 +167,7 @@ export const workspaceSchema = z.object({
       cardVersion: nonnegative.int(),
       rating: z.number().int().min(1).max(4),
       wasNew: z.boolean(),
+      mode: z.enum(["scheduled", "practice"]).default("scheduled"),
       reviewedAt: isoDate,
     }),
   ),

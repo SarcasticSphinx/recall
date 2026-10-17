@@ -174,7 +174,8 @@ export function applyPreview(
         if (
           existing.cardId !== action.id ||
           existing.rating !== action.rating ||
-          existing.cardVersion !== action.version
+          existing.cardVersion !== action.version ||
+          (existing.mode || "scheduled") !== (action.mode || "scheduled")
         )
           throw new Error("This review identifier has already been used.");
         return next;
@@ -182,18 +183,24 @@ export function applyPreview(
       const card = next.cards.find((c) => c.id === action.id);
       if (!card || card.version !== action.version)
         throw new Error("This card changed. Refresh to continue.");
-      if (!studyQueue(next).some((c) => c.id === action.id))
+      if (
+        action.mode !== "practice" &&
+        !studyQueue(next).some((c) => c.id === action.id)
+      )
         throw new Error("This card is not ready to review.");
       next.reviews.push({
         operationId: action.operationId,
         cardId: card.id,
         cardVersion: card.version,
         rating: action.rating,
-        wasNew: card.schedule.reps === 0,
+        mode: action.mode || "scheduled",
+        wasNew: action.mode !== "practice" && card.schedule.reps === 0,
         reviewedAt: new Date().toISOString(),
       });
-      card.schedule = nextSchedule(card.schedule, action.rating);
-      card.version += 1;
+      if (action.mode !== "practice") {
+        card.schedule = nextSchedule(card.schedule, action.rating);
+        card.version += 1;
+      }
       break;
     }
   }

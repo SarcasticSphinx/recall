@@ -241,7 +241,7 @@ Business operations and scheduler integration shall be separated from React comp
 
 Google verifies identity, Better Auth manages the app account/session, Prisma accesses storage, and Neon persists it. Configure development and production OAuth callbacks for `/api/auth/callback/google`. Keep credentials in server environment configuration.
 
-An installable web manifest and related browser installation behavior are proposed follow-up work. Installation shall not imply offline reviewing; offline persistence requires a separate design.
+Recall provides an installable web manifest, standalone display, home-screen icons, installation guidance, and a production service worker with a public offline reconnect page. Cloud cards and mutations require connectivity. Offline cloud review and queued synchronization require a separate design.
 
 ## 11. Nonfunctional requirements
 
@@ -281,7 +281,7 @@ Before release, the selected scope shall pass relevant acceptance scenarios, lin
 
 ## 13. Implementation state and milestones
 
-At the initial requirements baseline, only the scaffold existed. The first implementation slice now includes the dashboard, deck/card management, browser preview, FSRS review flow, preferences, Prisma schema and migration, and auth/API foundation. See [implementation notes](implementation.md) for defaults and verification evidence. Authenticated browser verification, installation support, and deployment remain pending; provider connectivity and the notes-to-cards implementation are complete.
+At the initial requirements baseline, only the scaffold existed. The first implementation slice now includes the dashboard, deck/card management, browser preview, FSRS review flow, preferences, Prisma schema and migration, and auth/API foundation. See [implementation notes](implementation.md) for defaults and verification evidence. Authenticated browser verification and deployment remain pending; provider connectivity and the notes-to-cards implementation are complete.
 
 Development-specific build and audit findings belong in [development.md](development.md); they are not product requirements.
 
@@ -345,3 +345,12 @@ Use solid surfaces without gradients. Cover, upload hints, icon controls, and fo
 File selection creates a local preview only. Save validates the draft first, uploads only images still referenced by the final document or cover, replaces local references with Cloudinary URLs, then persists the card/deck. Cancel does not upload files. A failed save keeps the open draft and reuses successful uploads on retry. Unsaved files are released when the editor closes; there is no draft backup across reloads.
 
 Question and answer image actions are icon buttons in the formatting toolbar. Practice shows question images immediately, conceals answer images until reveal, and requests those images eagerly when their section is mounted. The latest editor document must be read at Save. Deck icons remain visible with covers, and the weekly chart is the first section after the Today heading.
+
+## Anytime review and PWA update — 18 October 2026
+
+- Scheduled review retains FSRS eligibility, daily new-card limits, version checks, and idempotency. Ratings update the schedule.
+- Free practice allows any owned cards, including future reviews and new cards above the daily allowance. Ratings count as practice activity, preserve card schedule/version, and do not count as new introductions. Review events record their mode; legacy events default to scheduled.
+- The accessible shadcn Sheet provides deck scope, question/answer search, due/new/learning/previously forgotten filters, per-card selection, shuffle, and bounded session size. Selection is validated again at session start and ownership/version is checked when saving.
+- PWA installation uses the existing Recall brand, regular and maskable icons, standalone display, safe-area support, theme-aware browser color, and device-specific instructions in Preferences.
+- The production worker caches only public icons and the offline page. It bypasses APIs, mutations, external resources, user images, and account HTML. Updates require explicit reload; active editing and study defer the workspace update control.
+- Installation requires HTTPS or localhost. Real device installation and authenticated cross-device behavior remain release verification tasks. A network connection is required for cloud data and provider integrations.

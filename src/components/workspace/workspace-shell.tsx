@@ -2,6 +2,7 @@
 import { RecallMark } from "@/components/recall-mark";
 import { useControllerContext, useWorkspace } from "./workspace-context";
 import { WorkspaceNavigation } from "./navigation";
+import { PwaStatus } from "@/components/pwa/install-panel";
 import { WorkspaceHeader } from "./header";
 import { TodayPage } from "./today-page";
 import { DecksPage } from "./decks-page";
@@ -10,6 +11,10 @@ import { PreferencesPage } from "./preferences-page";
 import { WorkspaceDialogs } from "./workspace-dialogs";
 import { ReviewSession } from "./review-session";
 import { WorkspaceToasts } from "./workspace-toasts";
+import dynamic from "next/dynamic";
+const ReviewPicker = dynamic(() =>
+  import("./review-picker").then((m) => m.ReviewPicker),
+);
 import { Feedback } from "./feedback";
 export function WorkspaceShell() {
   const {
@@ -61,13 +66,25 @@ export function WorkspaceShell() {
   return <LoadedWorkspace />;
 }
 function LoadedWorkspace() {
-  const { isPreview, loadError, modal, session, view, deck } = useWorkspace();
+  const {
+    isPreview,
+    loadError,
+    modal,
+    session,
+    view,
+    deck,
+    reviewPicker,
+    mediaBusy,
+  } = useWorkspace();
   return (
     <div className="app-shell">
       <WorkspaceToasts />
       <WorkspaceNavigation />
       <div className="main-shell">
         <WorkspaceHeader />
+        <PwaStatus
+          deferUpdates={Boolean(modal || session || reviewPicker || mediaBusy)}
+        />
         {isPreview && (
           <div className="preview-banner">
             <span className="preview-dot" />
@@ -94,6 +111,7 @@ function LoadedWorkspace() {
         </main>
       </div>
       <WorkspaceDialogs />
+      {reviewPicker && <ReviewPicker deckId={reviewPicker.deckId} />}
       {session && <ReviewSession />}
     </div>
   );

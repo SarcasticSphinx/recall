@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { applyPreview, createPreview } from "@/lib/preview";
+import { selectedReviewCards, type ReviewMode } from "@/lib/review-selection";
 import { studyQueue, type Workspace } from "@/lib/study";
 import {
   actionSchema,
@@ -30,6 +31,9 @@ export function useWorkspaceController({
   const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
   const [modal, setModal] = useState<ModalState>(
     authError && !user ? { type: "signin" } : null,
+  );
+  const [reviewPicker, setReviewPicker] = useState<{ deckId?: string } | null>(
+    null,
   );
   const [session, setSession] = useState<StudySession | null>(null);
   const [busy, setBusy] = useState(false);
@@ -115,6 +119,8 @@ export function useWorkspaceController({
     setError("");
     setNotice("");
     try {
+      if (!isPreview && !navigator.onLine)
+        throw new Error("You're offline. Reconnect to save this change.");
       const action = actionSchema.parse(input);
       let next: Workspace;
       if (isPreview) {
@@ -170,11 +176,42 @@ export function useWorkspaceController({
     setError("");
     setNotice("");
     setSession({
+      mode: "scheduled",
       cards,
       index: 0,
       title:
         workspace.decks.find((d) => d.id === deckId)?.name ||
         "Today's practice",
+      revealed: false,
+      operationId: crypto.randomUUID(),
+    });
+  }
+  function openStudyPicker(deckId?: string) {
+    setError("");
+    setReviewPicker({ deckId });
+  }
+  function startCustomStudy(options: {
+    mode: ReviewMode;
+    ids: string[];
+    shuffle: boolean;
+    limit?: number;
+    title: string;
+  }) {
+    const current = workspaceRef.current;
+    if (!current) return;
+    const cards = selectedReviewCards(current, options);
+    if (!cards.length) {
+      setNotice("No matching cards are ready. Adjust your selection.");
+      return;
+    }
+    setReviewPicker(null);
+    setError("");
+    setNotice("");
+    setSession({
+      mode: options.mode,
+      cards,
+      index: 0,
+      title: options.title,
       revealed: false,
       operationId: crypto.randomUUID(),
     });
@@ -185,6 +222,7 @@ export function useWorkspaceController({
     if (!card) return;
     const saved = await mutate({
       type: "review",
+      mode: session.mode,
       id: card.id,
       version: card.version,
       rating,
@@ -267,6 +305,10 @@ export function useWorkspaceController({
     setModal,
     session,
     setSession,
+    reviewPicker,
+    setReviewPicker,
+    openStudyPicker,
+    startCustomStudy,
     busy,
     mediaBusy,
     setMediaBusy,

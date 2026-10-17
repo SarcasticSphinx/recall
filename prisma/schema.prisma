@@ -121,6 +121,7 @@ model Review {
   operationId  String
   cardVersion  Int
   rating       Int
+  mode         String   @default("scheduled")
   wasNew       Boolean
   reviewedAt   DateTime @default(now())
   nextSchedule Json

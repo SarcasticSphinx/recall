@@ -109,3 +109,11 @@ During development sign-in troubleshooting, the initial migration was applied to
 - A read-only diagnostic found no stored image nodes on the existing account card. An image that was never saved as part of a document must be attached again; there is no reliable source reference to recover automatically.
 
 - Card/deck editors keep Save visible in a separate footer while fields scroll above it.
+
+### Anytime review and installation (18 October 2026)
+
+Added review selection as a lazy shadcn Sheet, with independently recorded free practice that leaves FSRS and new-card allowance unchanged. Migration `202610180001_practice_reviews` adds a defaulted review mode; it was deployed to the configured database and Prisma Client regenerated. Existing event data remains scheduled.
+
+Added the App Router manifest, brand-derived PNG/maskable/Apple icons, production worker registration, public offline fallback, Preferences installation instructions, connectivity status, and explicit update handling. No account HTML/API data enters Cache Storage. Offline cloud review is outside this implementation.
+
+Validation: 41 unit/regression tests cover schedule invariants, retry/mode collisions, selection/filtering, PNG sizes, manifest fields, service-worker network fallback and private-request exclusions. Browser preview verified search → one-card practice → successful rating/completion. Production compilation, lint and type checking pass. Physical iPhone/Mac installation and full authenticated browser sessions remain manual release checks.

@@ -16,6 +16,7 @@ export type ModalState =
   | { type: "signin" }
   | null;
 export type StudySession = {
+  mode: "scheduled" | "practice";
   cards: StudyCard[];
   index: number;
   title: string;

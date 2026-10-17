@@ -1,11 +1,22 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { PwaProvider } from "@/components/pwa/pwa-provider";
 
 export const metadata: Metadata = {
   title: "Recall",
+  applicationName: "Recall",
+  appleWebApp: { capable: true, title: "Recall", statusBarStyle: "default" },
+  icons: { apple: "/pwa/apple-touch-icon.png" },
   description:
     "A quiet space for flashcards, active recall, and daily practice.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#faf9f6",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -18,7 +29,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
       </head>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <PwaProvider>{children}</PwaProvider>
+      </body>
     </html>
   );
 }

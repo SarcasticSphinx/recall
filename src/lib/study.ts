@@ -30,6 +30,7 @@ export type ReviewEvent = {
   cardVersion: number;
   rating: number;
   wasNew: boolean;
+  mode?: "scheduled" | "practice";
   reviewedAt: string;
 };
 export type Workspace = {

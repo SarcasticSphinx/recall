@@ -25,6 +25,7 @@ export function TodayPage() {
     setError,
     setModal,
     startStudy,
+    openStudyPicker,
   } = useWorkspace();
   const copy = usePageCopy();
   return (
@@ -69,11 +70,30 @@ export function TodayPage() {
           </p>
           <button
             className="button primary"
-            onClick={() => (queue.length ? startStudy() : navigate("decks"))}
+            onClick={() =>
+              queue.length
+                ? startStudy()
+                : workspace.cards.length
+                  ? openStudyPicker()
+                  : navigate("decks")
+            }
           >
-            {queue.length ? "Start today's review" : "Explore your decks"}
+            {queue.length
+              ? "Start today's review"
+              : workspace.cards.length
+                ? "Practice anytime"
+                : "Explore your decks"}
             <Icon name="arrow" size={18} />
           </button>
+          {workspace.cards.length > 0 && (
+            <button
+              className="text-button custom-study-link"
+              onClick={() => openStudyPicker()}
+            >
+              Choose cards to study
+              <Icon name="settings" size={15} />
+            </button>
+          )}
           <span className="hero-footnote">
             {queue.length
               ? "One question at a time. You've got this."

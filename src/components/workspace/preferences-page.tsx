@@ -1,4 +1,5 @@
 "use client";
+import { InstallPanel } from "@/components/pwa/install-panel";
 import { usePageCopy } from "@/hooks/use-page-copy";
 import {
   Select,
@@ -124,6 +125,7 @@ export function PreferencesPage() {
           </button>
         </div>
       </form>
+      <InstallPanel />
       <section className="account-panel">
         <div>
           <h3>{isPreview ? "Take your learning with you." : user?.name}</h3>

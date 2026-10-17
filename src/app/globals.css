@@ -4017,3 +4017,324 @@ kbd {
 .editor-form > .modal-actions {
   background: var(--paper);
 }
+
+/* Focused study setup in an accessible shadcn sheet. */
+.review-picker[data-slot="sheet-content"] {
+  background: var(--paper);
+  color: var(--ink);
+  width: min(460px, 100%);
+  max-width: none;
+  height: 100dvh;
+  gap: 0;
+  z-index: 70;
+  border-color: var(--line);
+  padding: 0;
+}
+[data-slot="sheet-overlay"] {
+  background: #24272065;
+}
+[data-theme="dark"] [data-slot="sheet-overlay"] {
+  background: #080a08ad;
+}
+.review-picker [data-slot="sheet-header"] {
+  padding: max(28px, env(safe-area-inset-top)) 24px 20px;
+  flex-shrink: 0;
+  text-align: left;
+}
+.review-picker [data-slot="sheet-title"] {
+  font:
+    29px/1.2 Georgia,
+    serif;
+  margin: 9px 24px 8px 0;
+}
+.review-picker [data-slot="sheet-description"] {
+  font-size: 12px;
+  color: var(--muted);
+}
+.review-picker-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 24px;
+}
+.review-mode-tabs {
+  display: flex;
+  width: 100%;
+  background: var(--soft);
+}
+.review-mode-tabs [data-slot="tabs-trigger"] {
+  font-size: 12px;
+  min-height: 38px;
+}
+.review-mode-help {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 11px;
+  margin: 13px 0 22px;
+}
+.review-filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.review-filter-grid label {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.review-filter-grid [data-slot="select-trigger"] {
+  width: 100%;
+  max-width: none;
+  font-size: 11px;
+}
+.review-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--canvas);
+  padding: 11px 12px;
+  margin: 16px 0;
+  color: var(--muted);
+}
+.review-search input {
+  border: 0;
+  outline: 0;
+  min-width: 0;
+  width: 100%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+}
+.review-selection-heading,
+.review-selection-heading label {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 11px;
+}
+.review-selection-heading {
+  justify-content: space-between;
+  padding: 8px 0 14px;
+}
+.review-selection-heading > span {
+  color: var(--muted);
+}
+.review-card-choices {
+  border-top: 1px solid var(--line);
+  padding-bottom: 18px;
+}
+.review-card-choice {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.review-card-choice > span {
+  flex: 1;
+  min-width: 0;
+}
+.review-card-choice strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.review-card-choice small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+.review-card-choice [data-slot="badge"] {
+  flex: 0 0 auto;
+  font-size: 9px;
+}
+.review-picker-empty {
+  padding: 30px 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+}
+.review-picker-empty strong {
+  color: var(--ink);
+}
+.review-picker-footer {
+  border-top: 1px solid var(--line);
+  padding: 16px 24px max(20px, env(safe-area-inset-bottom));
+  flex-shrink: 0;
+  background: var(--paper);
+}
+.review-session-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.shuffle-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.review-session-options [data-slot="select-trigger"] {
+  min-height: 36px;
+  width: auto;
+  font-size: 11px;
+}
+.review-picker-footer > .button {
+  width: 100%;
+  font-size: 12px;
+}
+.review-picker-footer > p {
+  text-align: center;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 10px;
+  line-height: 1.6;
+}
+.custom-study-link {
+  margin-top: 14px;
+  font-size: 12px;
+}
+.session-mode-label {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: normal;
+  margin-top: 5px;
+}
+.install-panel {
+  margin-top: 24px;
+  border: 1px solid var(--line);
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--paper);
+}
+.install-heading {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+.install-heading > svg {
+  color: var(--accent);
+}
+.install-heading h3 {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+.install-heading p,
+.install-hint,
+.install-instructions {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.install-state {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent);
+  font-size: 12px;
+}
+.install-instructions {
+  margin-top: 12px;
+}
+.install-instructions summary {
+  cursor: pointer;
+  color: var(--ink);
+}
+.install-instructions p {
+  margin-top: 8px;
+}
+.connection-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--soft);
+  color: var(--accent);
+  font-size: 11px;
+}
+.connection-banner button {
+  font-size: 11px;
+}
+@media (max-width: 640px) {
+  .review-picker [data-slot="sheet-header"] {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .review-picker-body {
+    padding: 0 20px;
+  }
+  .review-picker-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .review-picker [data-slot="sheet-title"] {
+    font-size: 27px;
+  }
+  .install-panel {
+    padding: 18px;
+  }
+  .study-header > span:nth-child(2) {
+    max-width: 45%;
+    white-space: normal;
+    font-size: 11px;
+  }
+  .session-mode-label {
+    font-size: 9px;
+  }
+}
+
+@media (max-height: 720px) {
+  .review-picker [data-slot="sheet-header"] {
+    padding: max(16px, env(safe-area-inset-top)) 20px 12px;
+    gap: 3px;
+  }
+  .review-picker [data-slot="sheet-title"] {
+    font-size: 23px;
+    margin: 4px 20px 3px 0;
+  }
+  .review-picker-body {
+    padding: 0 20px;
+  }
+  .review-mode-help {
+    margin: 8px 0 10px;
+    line-height: 1.5;
+  }
+  .review-search {
+    margin: 10px 0 4px;
+    padding: 8px 10px;
+  }
+  .review-selection-heading {
+    padding: 6px 0 8px;
+  }
+  .review-card-choice {
+    padding: 10px 0;
+  }
+  .review-picker-footer {
+    padding: 10px 20px max(10px, env(safe-area-inset-bottom));
+  }
+  .review-session-options {
+    margin-bottom: 8px;
+  }
+  .review-picker-footer > .button {
+    min-height: 42px;
+    padding: 10px 16px;
+  }
+  .review-picker-footer > p {
+    margin-top: 5px;
+  }
+}

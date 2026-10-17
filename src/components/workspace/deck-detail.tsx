@@ -8,7 +8,6 @@ const CardDataTable = dynamic(() =>
 import { useWorkspace } from "./workspace-context";
 import { RichContent } from "@/components/editor/rich-content";
 import { Icon } from "@/components/icon";
-import { studyQueue } from "@/lib/study";
 export function DeckDetail() {
   const {
     workspace,
@@ -18,7 +17,7 @@ export function DeckDetail() {
     setSearch,
     setError,
     setModal,
-    startStudy,
+    openStudyPicker,
     search,
   } = useWorkspace();
   const [cardView, setCardView] = useState("cards");
@@ -81,11 +80,10 @@ export function DeckDetail() {
         </label>
         <button
           className="button"
-          onClick={() => startStudy(deck!.id)}
-          disabled={!studyQueue(workspace, deck!.id).length}
+          onClick={() => openStudyPicker(deck!.id)}
+          disabled={!deckCards.length}
         >
-          Review {studyQueue(workspace, deck!.id).length}{" "}
-          {studyQueue(workspace, deck!.id).length === 1 ? "card" : "cards"}
+          Study deck
           <Icon name="arrow" size={17} />
         </button>
         <button
