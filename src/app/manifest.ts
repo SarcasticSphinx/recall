@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "Recall — a little practice, lasting knowledge",
+    name: "Recall",
     short_name: "Recall",
     description:
       "Personal flashcards, spaced repetition, and practice on your terms.",

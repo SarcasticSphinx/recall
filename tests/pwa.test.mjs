@@ -97,3 +97,53 @@ test("Preferences always offers an install action before a browser prompt is ava
   assert.match(html, /<button[^>]*>[\s\S]*?Install Recall<\/button>/);
   assert.doesNotMatch(html, /<button[^>]*\sdisabled(?:=|[\s>])/);
 });
+
+test("install guidance matches Safari, iPad desktop mode, Android and desktop Chromium", async () => {
+  const { installGuide } = await import("../src/lib/install-guide.ts");
+  assert.match(
+    installGuide({
+      userAgent:
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X) Version/26.0 Safari/605.1.15",
+      platform: "MacIntel",
+    }).title,
+    /Dock/,
+  );
+  assert.match(
+    installGuide({
+      userAgent: "Mozilla/5.0 (Macintosh) Safari/605.1.15",
+      platform: "MacIntel",
+      maxTouchPoints: 5,
+    }).title,
+    /Home Screen/,
+  );
+  assert.match(
+    installGuide({ userAgent: "iPhone Safari/605.1.15" }).title,
+    /Home Screen/,
+  );
+  assert.match(
+    installGuide({ userAgent: "Android Chrome/140.0" }).title,
+    /Android/,
+  );
+  assert.doesNotMatch(
+    installGuide({
+      userAgent: "Macintosh Chrome/140.0 Safari/537.36",
+      platform: "MacIntel",
+    }).title,
+    /Dock/,
+  );
+});
+test("favicon contains brand PNG icons at 16, 32 and 48 pixels", async () => {
+  const ico = await readFile(
+    new URL("../src/app/favicon.ico", import.meta.url),
+  );
+  assert.equal(ico.readUInt16LE(2), 1);
+  assert.equal(ico.readUInt16LE(4), 3);
+  for (let i = 0; i < 3; i++) {
+    const entry = 6 + i * 16;
+    const offset = ico.readUInt32LE(entry + 12);
+    const size = ico.readUInt32LE(entry + 8);
+    assert.ok(offset + size <= ico.length);
+    assert.equal(ico.subarray(offset + 1, offset + 4).toString(), "PNG");
+    assert.equal(ico.readUInt32BE(offset + 16), [16, 32, 48][i]);
+  }
+});

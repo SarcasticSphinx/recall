@@ -11,13 +11,16 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Download, Smartphone, Check, RefreshCw } from "lucide-react";
+import { installGuide } from "@/lib/install-guide";
 import { usePwa } from "./pwa-provider";
 export function InstallPanel() {
   const { installed, canInstall, install, updateReady, update } = usePwa();
+  const [guide, setGuide] = useState(installGuide);
   const [helpOpen, setHelpOpen] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [promptFailed, setPromptFailed] = useState(false);
   async function handleInstall() {
+    setGuide(installGuide(navigator));
     if (!canInstall) {
       setPromptFailed(false);
       setHelpOpen(true);
@@ -61,37 +64,24 @@ export function InstallPanel() {
       <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
         <DialogContent className="install-dialog">
           <DialogHeader>
-            <DialogTitle>Install Recall</DialogTitle>
+            <DialogTitle>{guide.title}</DialogTitle>
             <DialogDescription>
               {promptFailed
                 ? "The install prompt couldn’t open. You can still use your browser’s menu."
-                : "Add Recall using your browser’s menu. Some browsers don’t offer a pop-up install prompt."}
+                : guide.description}
             </DialogDescription>
           </DialogHeader>
           <ol className="install-device-steps">
-            <li>
-              <strong>iPhone or iPad</strong>
-              <p>
-                Open Recall in Safari. Tap Share, then Add to Home Screen, then
-                Add.
-              </p>
-            </li>
-            <li>
-              <strong>Mac with Safari</strong>
-              <p>Choose File → Add to Dock, then Add.</p>
-            </li>
-            <li>
-              <strong>Chrome or Edge</strong>
-              <p>
-                Open the browser menu and choose Install Recall or Install app.
-                On desktop, you can also use the install icon in the address
-                bar.
-              </p>
-            </li>
+            {guide.steps.map((step, index) => (
+              <li key={step}>
+                <strong>Step {index + 1}</strong>
+                <p>{step}</p>
+              </li>
+            ))}
           </ol>
           <p className="install-hint">
-            Using an in-app browser? Open Recall in Safari or Chrome first. If
-            it’s already installed, open it from your home screen or Dock.
+            Installation needs your confirmation in the browser. Recall can’t
+            install itself silently.
           </p>
           <DialogFooter>
             <DialogClose asChild>
