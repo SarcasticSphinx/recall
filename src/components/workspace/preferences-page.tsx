@@ -100,8 +100,9 @@ export function PreferencesPage() {
           <div>
             <h3>Card editor</h3>
             <p>
-              Focus is a clean writing space. Canvas adds formatting and answer
-              images. Your saved formatting is always shown during review.
+              Focus is a clean writing space. Canvas adds text formatting. Both
+              editors support question and answer images. Your saved formatting
+              is always shown during review.
             </p>
           </div>
           <Select

@@ -11,7 +11,7 @@ export function ImageUpload({
   children,
   label,
 }: {
-  purpose: "deck" | "answer";
+  purpose: "deck" | "question" | "answer";
   onUpload: (url: string) => void;
   onBusyChange?: (busy: boolean) => void;
   dropzone?: boolean;
@@ -68,7 +68,8 @@ export function ImageUpload({
         ref={input}
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        className="sr-only"
+        hidden
+        style={{ display: "none" }}
         tabIndex={-1}
         aria-label={`Upload ${purpose} image`}
         disabled={disabled}

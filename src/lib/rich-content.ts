@@ -113,10 +113,7 @@ export const richDocumentSchema = z
   .pipe(nodeSchema)
   .refine((node) => node.type === "doc", "Expected a rich-text document.")
   .refine(validImages, "Each image needs an uploaded source.");
-export const questionDocumentSchema = richDocumentSchema.refine(
-  (doc) => !hasImages(doc),
-  "Images are supported in answers only.",
-);
+export const questionDocumentSchema = richDocumentSchema;
 export function hasImages(node: RichNode): boolean {
   return node.type === "image" || !!node.content?.some(hasImages);
 }
@@ -137,4 +134,30 @@ export function plainDocument(text: string): RichNode {
       content: line ? [{ type: "text", text: line }] : [],
     })),
   };
+}
+
+/** Keep attached images when a Focus-mode field changes its plain text. */
+export function editPlainDocument(
+  text: string,
+  document?: RichNode | null,
+): RichNode | null {
+  if (!document) return null;
+  if (richText(document).trim() === text.trim()) return document;
+  const images = (node: RichNode): RichNode[] =>
+    node.type === "image" ? [node] : node.content?.flatMap(images) || [];
+  const next = plainDocument(text);
+  next.content?.push(...images(document));
+  return next;
+}
+export function attachImage(
+  text: string,
+  document: RichNode | null | undefined,
+  src: string,
+  alt: string,
+): RichNode {
+  const next = structuredClone(
+    editPlainDocument(text, document) || plainDocument(text),
+  );
+  next.content?.push({ type: "image", attrs: { src, alt } });
+  return next;
 }

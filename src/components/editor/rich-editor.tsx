@@ -1,5 +1,4 @@
 "use client";
-import { useRef } from "react";
 import { useEditor, EditorContent, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TiptapImage from "@tiptap/extension-image";
@@ -14,7 +13,6 @@ import {
   Heading2,
   Undo2,
   Redo2,
-  Link2,
   Unlink,
   type LucideIcon,
 } from "lucide-react";
@@ -49,25 +47,24 @@ export function RichEditor({
   label,
   value,
   text,
-  allowImages = false,
+  purpose,
   onChange,
   onBusyChange,
 }: {
   label: string;
   value?: RichNode | null;
   text: string;
-  allowImages?: boolean;
+  purpose: "question" | "answer";
   onChange: (value: RichNode, text: string) => void;
   onBusyChange?: (busy: boolean) => void;
 }) {
-  const linkInput = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
         link: { openOnClick: false },
       }),
-      ...(allowImages ? [SafeImage.configure({ allowBase64: false })] : []),
+      SafeImage.configure({ allowBase64: false }),
     ],
     immediatelyRender: false,
     content: value || plainDocument(text),
@@ -124,6 +121,20 @@ export function RichEditor({
   }
   return (
     <div className="rich-editor">
+      <div className="editor-attachments">
+        <ImageUpload
+          purpose={purpose}
+          label={`Add ${purpose} image`}
+          onBusyChange={onBusyChange}
+          onUpload={(url) =>
+            editor
+              ?.chain()
+              .focus()
+              .setImage({ src: url, alt: `${label} illustration` })
+              .run()
+          }
+        />
+      </div>
       <div
         className="rich-toolbar"
         role="toolbar"
@@ -211,51 +222,6 @@ export function RichEditor({
         {tool("Redo", Redo2, () => editor?.chain().focus().redo().run())}
       </div>
       <EditorContent editor={editor} />
-      <div className="editor-link">
-        <Link2 size={14} />
-        <input
-          ref={linkInput}
-          type="url"
-          placeholder="https://… (select text first)"
-          aria-label={`${label} link URL`}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") event.preventDefault();
-          }}
-        />
-        <button
-          type="button"
-          disabled={!editor}
-          onClick={() => {
-            const input = linkInput.current;
-            if (input && /^https?:\/\//i.test(input.value.trim())) {
-              editor
-                ?.chain()
-                .focus()
-                .extendMarkRange("link")
-                .setLink({ href: input.value.trim() })
-                .run();
-              input.value = "";
-            }
-          }}
-        >
-          Link
-        </button>
-      </div>
-      {allowImages && (
-        <div className="editor-image-action">
-          <ImageUpload
-            purpose="answer"
-            onBusyChange={onBusyChange}
-            onUpload={(url) =>
-              editor
-                ?.chain()
-                .focus()
-                .setImage({ src: url, alt: "Answer illustration" })
-                .run()
-            }
-          />
-        </div>
-      )}
     </div>
   );
 }

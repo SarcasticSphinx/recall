@@ -72,7 +72,7 @@ During development sign-in troubleshooting, the initial migration was applied to
 ## Rich cards, deck identity, and component structure
 
 - shadcn Select, Dropdown Menu, Dialog, and Button primitives retain the existing color system and layout. UI icon glyphs come from Lucide React; the restored Recall brand mark and decorative sign-in line artwork are dedicated SVGs.
-- A lazy-loaded Tiptap editor supports formatting on both card sides. Preferences select Focus or Canvas. Existing rich content renders safely as React elements without raw HTML injection. Focus edits preserve answer images and unchanged formatting.
+- A lazy-loaded Tiptap editor supports formatting on both card sides. Preferences select Focus or Canvas. Existing rich content renders safely as React elements without raw HTML injection. Focus edits preserve question and answer images and unchanged formatting.
 - Deck identity supports a Lucide icon and optional Cloudinary cover. Authenticated answer/cover uploads have server-side file validation, size bounds, and per-user hourly limits.
 - Additive rich-content/media migration has been applied to the configured development database. Existing preview data defaults to Focus mode and the cards icon.
 - Page copy comes from six local variants that rotate on full refresh. No AI requests are involved.
@@ -89,3 +89,11 @@ During development sign-in troubleshooting, the initial migration was applied to
 - shadcn Tabs switch between the card list and a lazy table view with search, sorting, pagination, and edit/delete actions. Attachment filenames use a Badge; draft selection uses Checkbox.
 - AI drafting sends supplied notes to OpenRouter, validates structured output, allows editing/selection, and saves only after explicit approval. Authentication, ownership, bounded input/output, a per-user rolling quota, and stable batch IDs protect the flow. Original notes remain accessible on saved AI cards.
 - The additive AI request/source migration has been applied to development Neon. OpenRouter returned three validated drafts from sample study notes in a live provider check. Cloudinary accepted a generated PNG, which was then removed. Full signed-in browser generation/upload flows remain to be exercised. Unit tests also use fixed response fixtures.
+
+## Flat editor layout and account loading repair
+
+- Removed the cover gradient and decorative gradient mask. Cover, upload guidance, and icon selection use separate rows with normal spacing; no negative margins or floating edit badge overlap them.
+- Both question and answer have an Add image file-upload button in Focus and Canvas. The always-visible URL input was removed from the rich editor. Question attachments use the same authenticated Cloudinary checks as answers. A question still needs a text prompt.
+- Focus-mode text changes preserve image attachments on either side. Validation and preview persistence tests cover question images and attachment preservation.
+- The development logs showed a Prisma validation failure after schema regeneration. The database singleton now tracks the generated client constructor and replaces stale instances; Better Auth rebuilds its adapter when that instance changes. Read-only account preference/deck/card/source/review queries passed against Neon.
+- Account startup can retry loading through the API or start a fresh Google sign-in. OAuth failures return to the app with recovery guidance; state verification remains enabled. A separate expired/reused OAuth state was visible in logs. Fresh sign-in initiation reached the official Google login screen in the browser. Completing Google credentials and verifying the callback still requires the owner to finish that login.

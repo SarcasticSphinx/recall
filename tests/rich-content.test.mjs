@@ -6,6 +6,8 @@ import {
   plainDocument,
   richText,
   cloudinaryImageUrl,
+  attachImage,
+  editPlainDocument,
 } from "../src/lib/rich-content.ts";
 import { createPreview, applyPreview } from "../src/lib/preview.ts";
 import { getPageCopy } from "../src/lib/page-copy.ts";
@@ -51,7 +53,7 @@ test("plain and formatted text cannot disagree", () => {
     false,
   );
 });
-test("question images, empty image nodes, and unsafe links are rejected", () => {
+test("question text must match the document; empty images and unsafe links are rejected", () => {
   assert.equal(
     actionSchema.safeParse({
       type: "createCard",
@@ -165,4 +167,39 @@ test("the copy library changes all page titles between adjacent refreshes", () =
       assert.notEqual(a[page][0], b[page][0]);
     assert.notEqual(a.complete, b.complete);
   }
+});
+
+test("question and answer uploads retain images across Focus edits and preview reloads", () => {
+  const src = image.attrs.src;
+  const questionDoc = attachImage(
+    "Name this shape?",
+    null,
+    src,
+    "Question illustration",
+  );
+  const answerDoc = attachImage("A circle.", null, src, "Answer illustration");
+  const action = actionSchema.parse({
+    type: "createCard",
+    deckId: "foundations",
+    question: "Name this shape?",
+    answer: "A circle.",
+    questionRich: questionDoc,
+    answerRich: answerDoc,
+  });
+  const next = applyPreview(createPreview(), action);
+  const saved = workspaceSchema
+    .parse(JSON.parse(JSON.stringify(next)))
+    .cards.at(-1);
+  assert.equal(saved.questionRich.content[1].attrs.src, src);
+  const changed = editPlainDocument("Identify the shape?", saved.questionRich);
+  assert.equal(richText(changed), "Identify the shape?\n");
+  assert.equal(changed.content[1].attrs.src, src);
+  assert.equal(editPlainDocument("Name this shape?", questionDoc), questionDoc);
+  assert.equal(questionDoc.content.length, 2);
+  assert.equal(
+    attachImage("Name this shape?", questionDoc, src, "Another image").content
+      .length,
+    3,
+  );
+  assert.equal(questionDoc.content.length, 2);
 });

@@ -77,9 +77,10 @@ export function DeckEditor({ deck }: { deck?: Deck }) {
                 className="deck-avatar-button"
                 aria-label="Change deck icon"
               >
-                <Icon name={icon} size={30} />
+                <Icon name={icon} size={22} />
+                Change icon
                 <span>
-                  <Icon name="edit" size={12} />
+                  <Icon name="edit" size={14} />
                 </span>
               </button>
             </DropdownMenuTrigger>
@@ -97,7 +98,6 @@ export function DeckEditor({ deck }: { deck?: Deck }) {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <span>Click the icon to change it</span>
           {imageUrl && (
             <button
               type="button"

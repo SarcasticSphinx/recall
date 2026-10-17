@@ -21,16 +21,25 @@ export function useWorkspaceController({
   loadError,
   uploadsEnabled,
   aiEnabled,
+  authError = false,
 }: WorkspaceProps) {
   const [workspace, setWorkspace] = useState<Workspace | null>(
     initialWorkspace,
   );
   const [view, setView] = useState<"today" | "decks" | "settings">("today");
   const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
-  const [modal, setModal] = useState<ModalState>(null);
+  const [modal, setModal] = useState<ModalState>(
+    authError && !user ? { type: "signin" } : null,
+  );
   const [session, setSession] = useState<StudySession | null>(null);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(
+    authError && !user
+      ? "Sign-in couldn't finish. Start a fresh Google sign-in below."
+      : "",
+  );
+  const [refreshing, setRefreshing] = useState(false);
+  const refreshingRef = useRef(false);
   const [notice, setNotice] = useState("");
   const [search, setSearch] = useState("");
   const [clock, setClock] = useState(() => new Date());
@@ -39,7 +48,9 @@ export function useWorkspaceController({
   const isPreview = !user;
 
   const refresh = useCallback(async () => {
-    if (!user || busyRef.current) return;
+    if (!user || busyRef.current || refreshingRef.current) return;
+    refreshingRef.current = true;
+    setRefreshing(true);
     try {
       const response = await fetch("/api/workspace", { cache: "no-store" });
       const body = await response.json();
@@ -47,10 +58,14 @@ export function useWorkspaceController({
         throw new Error(body.message || "Could not refresh your workspace.");
       workspaceRef.current = body;
       setWorkspace(body);
+      setError("");
     } catch (e) {
       setError(
         e instanceof Error ? e.message : "Could not refresh your workspace.",
       );
+    } finally {
+      refreshingRef.current = false;
+      setRefreshing(false);
     }
   }, [user]);
 
@@ -227,6 +242,7 @@ export function useWorkspaceController({
       const result = await authClient.signIn.social({
         provider: "google",
         callbackURL: "/",
+        errorCallbackURL: "/?authError=signin",
       });
       if (result.error)
         throw new Error(
@@ -260,6 +276,7 @@ export function useWorkspaceController({
     clock,
     isPreview,
     refresh,
+    refreshing,
     mutate,
     navigate,
     startStudy,

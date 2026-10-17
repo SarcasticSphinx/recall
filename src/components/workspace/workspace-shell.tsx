@@ -12,7 +12,17 @@ import { ReviewSession } from "./review-session";
 import { WorkspaceToasts } from "./workspace-toasts";
 import { Feedback } from "./feedback";
 export function WorkspaceShell() {
-  const { workspace, error, loadError } = useControllerContext();
+  const {
+    workspace,
+    error,
+    loadError,
+    user,
+    refresh,
+    refreshing,
+    signIn,
+    busy,
+    authEnabled,
+  } = useControllerContext();
   if (!workspace)
     return (
       <main className="startup">
@@ -27,9 +37,24 @@ export function WorkspaceShell() {
               : "Making room for a little practice…")}
         </p>
         {(error || loadError) && (
-          <button className="button primary" onClick={() => location.reload()}>
-            Try again
-          </button>
+          <div className="startup-actions">
+            <button
+              className="button primary"
+              disabled={refreshing || busy}
+              onClick={() => (user ? void refresh() : location.reload())}
+            >
+              {refreshing ? "Loading your workspace…" : "Try again"}
+            </button>
+            {user && authEnabled && (
+              <button
+                className="button"
+                disabled={refreshing || busy}
+                onClick={() => void signIn()}
+              >
+                {busy ? "Opening Google…" : "Sign in again"}
+              </button>
+            )}
+          </div>
         )}
       </main>
     );
@@ -55,7 +80,7 @@ function LoadedWorkspace() {
             <span className="preview-tag">TRY IT OUT</span>
           </div>
         )}
-        {loadError && (
+        {loadError && isPreview && (
           <div className="feedback error" role="alert">
             Your account could not be loaded. This is a separate browser
             preview. Reload to retry your account.

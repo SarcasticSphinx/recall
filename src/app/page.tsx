@@ -7,7 +7,12 @@ import { loadWorkspace } from "@/lib/workspace-server";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ authError?: string }>;
+}) {
+  const authError = Boolean((await searchParams).authError);
   const authEnabled = isAuthConfigured();
   let user: { name: string; email: string } | null = null;
   let initialWorkspace = null;
@@ -21,7 +26,12 @@ export default async function Home() {
         user = { name: session.user.name, email: session.user.email };
         initialWorkspace = await loadWorkspace(session.user.id);
       }
-    } catch {
+    } catch (error) {
+      // Keep tokens, connection strings, and study content out of diagnostics.
+      console.error(
+        "Account load failed",
+        error instanceof Error ? error.name : "UnknownError",
+      );
       loadError = true;
     }
   }
@@ -33,6 +43,7 @@ export default async function Home() {
       initialWorkspace={initialWorkspace}
       authEnabled={authEnabled}
       loadError={loadError}
+      authError={authError}
     />
   );
 }

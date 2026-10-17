@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       !(file instanceof File) ||
       !file.size ||
       file.size > maxBytes ||
-      !["deck", "answer"].includes(String(purpose))
+      !["deck", "question", "answer"].includes(String(purpose))
     )
       return Response.json(
         { message: "Choose a valid image under 5 MB." },

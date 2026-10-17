@@ -3,7 +3,14 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Icon } from "@/components/icon";
 import { useWorkspace } from "./workspace-context";
-import { plainDocument, type RichNode } from "@/lib/rich-content";
+import {
+  plainDocument,
+  editPlainDocument,
+  attachImage,
+  type RichNode,
+} from "@/lib/rich-content";
+import { ImageUpload } from "@/components/editor/image-upload";
+import { RichContent } from "@/components/editor/rich-content";
 import type { StudyCard } from "@/lib/study";
 const RichEditor = dynamic(
   () => import("@/components/editor/rich-editor").then((m) => m.RichEditor),
@@ -12,9 +19,6 @@ const RichEditor = dynamic(
     loading: () => <p className="form-hint">Opening the rich editor…</p>,
   },
 );
-function images(node: RichNode): RichNode[] {
-  return node.type === "image" ? [node] : node.content?.flatMap(images) || [];
-}
 export function CardEditor({
   card,
   deckId,
@@ -32,7 +36,9 @@ export function CardEditor({
   const [answerRich, setAnswerRich] = useState<RichNode | null>(
     card?.answerRich || null,
   );
-  const [uploading, setUploading] = useState(false);
+  const [questionUploading, setQuestionUploading] = useState(false);
+  const [answerUploading, setAnswerUploading] = useState(false);
+  const uploading = questionUploading || answerUploading;
   const rich = workspace.preferences.editorMode === "rich";
   return (
     <form
@@ -40,22 +46,10 @@ export function CardEditor({
         event.preventDefault();
         const qDoc = rich
           ? questionRich || plainDocument(question)
-          : question === card?.question
-            ? card?.questionRich || null
-            : card?.questionRich
-              ? plainDocument(question)
-              : null;
-        let aDoc = rich
+          : editPlainDocument(question, questionRich);
+        const aDoc = rich
           ? answerRich || plainDocument(answer)
-          : answer === card?.answer
-            ? card?.answerRich || null
-            : card?.answerRich
-              ? plainDocument(answer)
-              : null;
-        if (!rich && card?.answerRich && answer !== card.answer) {
-          aDoc = plainDocument(answer);
-          aDoc.content?.push(...images(card.answerRich));
-        }
+          : editPlainDocument(answer, answerRich);
         const values = {
           question,
           answer,
@@ -89,6 +83,8 @@ export function CardEditor({
         {rich ? (
           <RichEditor
             label="Question"
+            purpose="question"
+            onBusyChange={setQuestionUploading}
             value={questionRich}
             text={question}
             onChange={(doc, text) => {
@@ -97,15 +93,33 @@ export function CardEditor({
             }}
           />
         ) : (
-          <textarea
-            id="card-question"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="What would you like to recall?"
-            maxLength={2000}
-            rows={3}
-            required
-          />
+          <>
+            <textarea
+              id="card-question"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="What would you like to recall?"
+              maxLength={2000}
+              rows={3}
+              required
+            />
+            <ImageUpload
+              purpose="question"
+              label="Add question image"
+              onBusyChange={setQuestionUploading}
+              onUpload={(url) =>
+                setQuestionRich(
+                  attachImage(
+                    question,
+                    questionRich,
+                    url,
+                    "Question illustration",
+                  ),
+                )
+              }
+            />
+            <AttachmentPreview document={questionRich} />
+          </>
         )}
       </div>
       <div className="field">
@@ -113,30 +127,44 @@ export function CardEditor({
         {rich ? (
           <RichEditor
             label="Answer"
+            purpose="answer"
             value={answerRich}
             text={answer}
-            allowImages
-            onBusyChange={setUploading}
+            onBusyChange={setAnswerUploading}
             onChange={(doc, text) => {
               setAnswerRich(doc);
               setAnswer(text);
             }}
           />
         ) : (
-          <textarea
-            id="card-answer"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            placeholder="A clear answer, in your own words."
-            maxLength={10000}
-            rows={4}
-            required={!card?.answerRich}
-          />
+          <>
+            <textarea
+              id="card-answer"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="A clear answer, in your own words."
+              maxLength={10000}
+              rows={4}
+              required={!answerRich}
+            />
+            <ImageUpload
+              purpose="answer"
+              label="Add answer image"
+              onBusyChange={setAnswerUploading}
+              onUpload={(url) =>
+                setAnswerRich(
+                  attachImage(answer, answerRich, url, "Answer illustration"),
+                )
+              }
+            />
+            <AttachmentPreview document={answerRich} />
+          </>
         )}
       </div>
       {!rich && (
         <p className="form-hint">
-          Choose Canvas in Preferences for formatting and answer images.
+          Choose Canvas in Preferences for text formatting. Images work in both
+          editors.
           {(card?.questionRich || card?.answerRich) &&
             " Existing formatting is kept for unchanged fields; changed text becomes plain, and attached images are preserved."}
         </p>
@@ -160,4 +188,16 @@ export function CardEditor({
       </div>
     </form>
   );
+}
+
+function AttachmentPreview({ document }: { document?: RichNode | null }) {
+  function images(node: RichNode): RichNode[] {
+    return node.type === "image" ? [node] : node.content?.flatMap(images) || [];
+  }
+  const attached = document ? images(document) : [];
+  return attached.length ? (
+    <div className="attachment-preview">
+      <RichContent document={{ type: "doc", content: attached }} text="" />
+    </div>
+  ) : null;
 }

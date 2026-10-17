@@ -9,7 +9,7 @@ Open Recall, practice retrieval, and know what to review next. Start with a resp
 - Google sign-in and private accounts across devices
 - Create, rename, and delete decks
 - Create, edit, and delete question/answer cards in Focus or Canvas mode
-- Rich formatting for both sides, answer images, and deck covers or Lucide icons
+- Rich formatting for both sides, question and answer images, and deck covers or Lucide icons
 - Study one card at a time; attempt an answer before revealing it
 - Rate recall with Again, Hard, Good, or Easy
 - FSRS scheduling and persistent review history

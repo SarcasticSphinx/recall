@@ -11,12 +11,12 @@ export function isAuthConfigured() {
     process.env.GOOGLE_CLIENT_SECRET,
   );
 }
-function createAuth() {
+function createAuth(db: ReturnType<typeof getDb>) {
   return betterAuth({
     appName: "Recall",
     baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
     secret: process.env.BETTER_AUTH_SECRET,
-    database: prismaAdapter(getDb(), { provider: "postgresql" }),
+    database: prismaAdapter(db, { provider: "postgresql" }),
     socialProviders: {
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -27,8 +27,14 @@ function createAuth() {
 }
 
 let instance: ReturnType<typeof createAuth> | undefined;
+let database: ReturnType<typeof getDb> | undefined;
 export function getAuth() {
   if (!isAuthConfigured())
     throw new Error("Google sign-in is not configured yet.");
-  return (instance ??= createAuth());
+  const current = getDb();
+  if (!instance || database !== current) {
+    instance = createAuth(current);
+    database = current;
+  }
+  return instance;
 }

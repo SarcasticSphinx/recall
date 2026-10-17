@@ -42,7 +42,7 @@ For restricted environments, use `npm run build -- --webpack`.
 
 Next.js App Router, React, TypeScript, Tailwind/CSS animations, Neon Postgres, Prisma, Better Auth, ts-fsrs, Zod, shadcn/Radix, Lucide React, and lazy-loaded Tiptap. Cloudinary handles media; OpenRouter is the selected AI provider.
 
-Implemented: Light/Dark/System themes, a centered animated sign-in dialog, Today dashboard, deck/card management, card search, keyboard-accessible review sessions, FSRS scheduling, summaries, preferences, browser preview, authenticated workspace API, Prisma migrations, Google auth configuration, Focus/Canvas card authoring, answer images, deck covers/icons, and rotating page copy.
+Implemented: Light/Dark/System themes, a centered animated sign-in dialog, Today dashboard, deck/card management, card search, keyboard-accessible review sessions, FSRS scheduling, summaries, preferences, browser preview, authenticated workspace API, Prisma migrations, Google auth configuration, Focus/Canvas card authoring, question and answer images, deck covers/icons, and rotating page copy.
 
 Pending: live cloud/auth integration verification, authenticated AI workflow verification, installation support, and deployment. Account deletion/export and backup operations remain outside this first slice.
 

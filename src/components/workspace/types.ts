@@ -6,6 +6,7 @@ export type WorkspaceProps = {
   initialWorkspace: Workspace | null;
   authEnabled: boolean;
   loadError: boolean;
+  authError?: boolean;
 };
 export type ModalState =
   | { type: "deck"; deck?: Deck }

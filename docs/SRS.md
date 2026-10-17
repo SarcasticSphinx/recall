@@ -320,8 +320,8 @@ This SRS is the consolidated requirements baseline. Keep the shorter companion d
 
 ## Rich authoring and media revision — 17 October 2026
 
-- Preferences shall offer Focus and Canvas authoring. Both question and answer support rich formatting; existing formatting remains visible in either preference.
-- Rich answers may attach Cloudinary images. Questions do not accept images. Uploads require an authenticated account and configured server credentials.
+- Preferences shall offer Focus and Canvas authoring. Both question and answer support rich formatting and image uploads; existing formatting remains visible in either preference.
+- Both card sides may attach Cloudinary images. Questions may also attach images alongside their text prompt. Uploads require an authenticated account and configured server credentials.
 - Decks may use a selected Lucide icon or a Cloudinary cover image. A cover takes visual precedence over the icon.
 - Uploads accept JPEG, PNG, or WebP up to 5 MB, validate file content on the server, and allow at most 30 uploads per account per hour.
 - Interface controls use Lucide React icons. Dropdowns, selects, and editing dialogs use shadcn components while retaining the established appearance.
@@ -335,3 +335,7 @@ The Recall brand retains its original stacked-note SVG, separate from general Lu
 Save notices use shadcn Sonner; decks offer Cards/Table tabs with search, sorting, pagination and actions. The Today chart displays actual review activity for the last seven local days.
 
 The first AI workflow is notes-to-cards: 80–12,000 characters of notes, 1–5 draft questions, editable review, selection and explicit saving. Only authenticated users can generate. Each account has five attempts per rolling 24 hours, reserved before provider calls. Source notes are retained privately and accessible on saved cards. Invalid output or provider failure preserves the open notes. Closing/reloading discards unsaved drafts. Model calls are time/output bounded, do not use tools and do not automatically retry. Provider spend limits and live verification remain deployment requirements.
+
+## Flat surfaces and card attachments revision
+
+Use solid surfaces without gradients. Cover, upload hints, icon controls, and form inputs must not overlap at mobile or desktop widths. Focus and Canvas both offer file upload buttons on question and answer fields, without image URL entry. Focus edits retain attachments. Startup failures offer retry and reauthentication; cached database clients must refresh after model regeneration during development, while OAuth state checks remain enforced.
