@@ -7,6 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
+  SheetFooter,
 } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -17,6 +18,17 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyDescription,
+} from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import {
   reviewCandidates,
@@ -73,168 +85,175 @@ export function ReviewPicker({ deckId }: { deckId?: string }) {
           <SheetTitle>What would you like to study?</SheetTitle>
           <SheetDescription>A little focus, on your terms.</SheetDescription>
         </SheetHeader>
-        <div className="review-picker-body">
-          <Tabs
-            value={mode}
-            onValueChange={(value) => {
-              setMode(value as ReviewMode);
-              setFilter("all");
-              resetSelection();
-            }}
-          >
-            <TabsList className="review-mode-tabs" aria-label="Review mode">
-              <TabsTrigger value="scheduled">Scheduled</TabsTrigger>
-              <TabsTrigger value="practice">Free practice</TabsTrigger>
-            </TabsList>
-            <TabsContent value="practice" className="review-mode-help">
-              Study any cards, even ahead of schedule. Your review dates stay
-              unchanged.
-            </TabsContent>
-            <TabsContent value="scheduled" className="review-mode-help">
-              Due cards and today’s new cards. Your ratings update the
-              spaced-repetition schedule.
-            </TabsContent>
-          </Tabs>
-          <div className="review-filter-grid">
-            <div>
-              <label id="review-deck-label">Collection</label>
-              <Select
-                value={scope}
-                onValueChange={(value) => {
-                  setScope(value);
-                  resetSelection();
-                }}
-              >
-                <SelectTrigger aria-labelledby="review-deck-label">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All decks</SelectItem>
-                  {workspace.decks.map((deck) => (
-                    <SelectItem key={deck.id} value={deck.id}>
-                      {deck.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label id="review-filter-label">Cards</label>
-              <Select
-                value={filter}
-                onValueChange={(value) => {
-                  setFilter(value as CardFilter);
-                  resetSelection();
-                }}
-              >
-                <SelectTrigger aria-labelledby="review-filter-label">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All matching</SelectItem>
-                  <SelectItem value="due">Due now</SelectItem>
-                  <SelectItem value="new">New cards</SelectItem>
-                  <SelectItem value="learning">Learning</SelectItem>
-                  <SelectItem value="difficult">
-                    Previously forgotten
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <label className="review-search">
-            <Search size={16} />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
+        <ScrollArea className="review-picker-body">
+          <div className="review-picker-fields">
+            <Tabs
+              value={mode}
+              onValueChange={(value) => {
+                setMode(value as ReviewMode);
+                setFilter("all");
                 resetSelection();
               }}
-              placeholder="Find a question or answer…"
-              aria-label="Find cards to review"
-            />
-          </label>
-          <div className="review-selection-heading">
-            <label>
-              <Checkbox
-                aria-label="Select all matching cards"
-                checked={
-                  cards.length > 0 && selected.length === cards.length
-                    ? true
-                    : selected.length > 0
-                      ? "indeterminate"
-                      : false
-                }
-                disabled={!cards.length}
-                onCheckedChange={(checked) =>
-                  setSelection(checked === true ? null : new Set())
-                }
+            >
+              <TabsList className="review-mode-tabs" aria-label="Review mode">
+                <TabsTrigger value="scheduled">Scheduled</TabsTrigger>
+                <TabsTrigger value="practice">Free practice</TabsTrigger>
+              </TabsList>
+              <TabsContent value="practice" className="review-mode-help">
+                Study any cards, even ahead of schedule. Your review dates stay
+                unchanged.
+              </TabsContent>
+              <TabsContent value="scheduled" className="review-mode-help">
+                Due cards and today’s new cards. Your ratings update the
+                spaced-repetition schedule.
+              </TabsContent>
+            </Tabs>
+            <div className="review-filter-grid">
+              <div>
+                <Label id="review-deck-label">Collection</Label>
+                <Select
+                  value={scope}
+                  onValueChange={(value) => {
+                    setScope(value);
+                    resetSelection();
+                  }}
+                >
+                  <SelectTrigger aria-labelledby="review-deck-label">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All decks</SelectItem>
+                    {workspace.decks.map((deck) => (
+                      <SelectItem key={deck.id} value={deck.id}>
+                        {deck.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label id="review-filter-label">Cards</Label>
+                <Select
+                  value={filter}
+                  onValueChange={(value) => {
+                    setFilter(value as CardFilter);
+                    resetSelection();
+                  }}
+                >
+                  <SelectTrigger aria-labelledby="review-filter-label">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All matching</SelectItem>
+                    <SelectItem value="due">Due now</SelectItem>
+                    <SelectItem value="new">New cards</SelectItem>
+                    <SelectItem value="learning">Learning</SelectItem>
+                    <SelectItem value="difficult">
+                      Previously forgotten
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="review-search">
+              <Search size={16} />
+              <Input
+                type="search"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  resetSelection();
+                }}
+                placeholder="Find a question or answer…"
+                aria-label="Find cards to review"
               />
-              Select all
-            </label>
-            <span>
-              {selected.length} of {cards.length} selected
-            </span>
-          </div>
-          <div className="review-card-choices">
-            {cards.slice(0, visible).map((card) => (
-              <label key={card.id} className="review-card-choice">
+            </div>
+            <div className="review-selection-heading">
+              <Label>
                 <Checkbox
-                  checked={selection === null || selection.has(card.id)}
+                  aria-label="Select all matching cards"
+                  checked={
+                    cards.length > 0 && selected.length === cards.length
+                      ? true
+                      : selected.length > 0
+                        ? "indeterminate"
+                        : false
+                  }
+                  disabled={!cards.length}
                   onCheckedChange={(checked) =>
-                    toggle(card.id, checked === true)
+                    setSelection(checked === true ? null : new Set())
                   }
                 />
-                <span>
-                  <strong>{card.question}</strong>
-                  <small>
-                    {workspace.decks.find((d) => d.id === card.deckId)?.name}
-                  </small>
-                </span>
-                <Badge variant="secondary">
-                  {card.schedule.reps === 0
-                    ? "New"
-                    : new Date(card.schedule.due) <= new Date()
-                      ? "Due"
-                      : "Later"}
-                </Badge>
-              </label>
-            ))}
-            {!cards.length && (
-              <div className="review-picker-empty">
-                <strong>
-                  {mode === "scheduled"
-                    ? "Nothing scheduled here."
-                    : "No matching cards."}
-                </strong>
-                <p>
-                  {mode === "scheduled"
-                    ? "Switch to Free practice to study anytime, or adjust your filters."
-                    : "Try another deck or search."}
-                </p>
-              </div>
-            )}
-            {cards.length > visible && (
-              <button
-                className="text-button"
-                onClick={() => setVisible((v) => v + 100)}
-              >
-                Show more cards
-              </button>
-            )}
+                Select all
+              </Label>
+              <span>
+                {selected.length} of {cards.length} selected
+              </span>
+            </div>
+            <Separator className="review-picker-separator" />
+            <div className="review-card-choices">
+              {cards.slice(0, visible).map((card) => (
+                <Label key={card.id} className="review-card-choice">
+                  <Checkbox
+                    checked={selection === null || selection.has(card.id)}
+                    onCheckedChange={(checked) =>
+                      toggle(card.id, checked === true)
+                    }
+                  />
+                  <span>
+                    <strong>{card.question}</strong>
+                    <small>
+                      {workspace.decks.find((d) => d.id === card.deckId)?.name}
+                    </small>
+                  </span>
+                  <Badge variant="secondary">
+                    {card.schedule.reps === 0
+                      ? "New"
+                      : new Date(card.schedule.due) <= new Date()
+                        ? "Due"
+                        : "Later"}
+                  </Badge>
+                </Label>
+              ))}
+              {!cards.length && (
+                <Empty className="review-picker-empty">
+                  <EmptyHeader>
+                    <EmptyTitle>
+                      {mode === "scheduled"
+                        ? "Nothing scheduled here."
+                        : "No matching cards."}
+                    </EmptyTitle>
+                    <EmptyDescription>
+                      {mode === "scheduled"
+                        ? "Switch to Free practice to study anytime, or adjust your filters."
+                        : "Try another deck or search."}
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
+              )}
+              {cards.length > visible && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-button"
+                  onClick={() => setVisible((v) => v + 100)}
+                >
+                  Show more cards
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="review-picker-footer">
+        </ScrollArea>
+        <SheetFooter className="review-picker-footer">
           <div className="review-session-options">
-            <label className="shuffle-choice">
+            <Label className="shuffle-choice">
               <Checkbox
                 checked={shuffle}
                 onCheckedChange={(checked) => setShuffle(checked === true)}
               />
               <Shuffle size={14} />
               Shuffle
-            </label>
+            </Label>
             <Select value={limit} onValueChange={setLimit}>
               <SelectTrigger aria-label="Session size">
                 <SelectValue />
@@ -247,7 +266,8 @@ export function ReviewPicker({ deckId }: { deckId?: string }) {
               </SelectContent>
             </Select>
           </div>
-          <button
+          <Button
+            size="lg"
             className="button primary"
             disabled={!count}
             onClick={() =>
@@ -269,13 +289,13 @@ export function ReviewPicker({ deckId }: { deckId?: string }) {
             {mode === "practice" ? "Start practice" : "Start review"} · {count}{" "}
             {count === 1 ? "card" : "cards"}
             <ArrowRight size={16} />
-          </button>
+          </Button>
           <p>
             {mode === "practice"
               ? "Practice is recorded. Scheduling stays as it is."
               : "New-card limits apply across all decks."}
           </p>
-        </div>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
