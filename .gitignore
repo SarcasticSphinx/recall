@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Keep the credential template tracked
 !.env.example
+
+# Generated Prisma client
+/src/generated/prisma/

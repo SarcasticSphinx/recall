@@ -6,5 +6,6 @@ This folder records product and technical decisions. Update it as decisions chan
 - [Product](product.md): purpose, MVP scope, and visual direction
 - [Architecture](architecture.md): stack, authentication, data, and AI boundaries
 - [Development](development.md): setup and implementation milestones
+- [Implementation](implementation.md): delivered features, chosen defaults, and verification limits
 
-Current status: project scaffold and dependencies initialized. External services and features remain to be configured.
+Current status: the first flashcard and review slice is implemented, including a browser preview and cloud/auth foundation. Live service integration, AI, and deployment remain pending.

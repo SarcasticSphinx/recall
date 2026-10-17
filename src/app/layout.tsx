@@ -4,7 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Recall",
-  description: "A quiet space for flashcards, active recall, and daily practice.",
+  description:
+    "A quiet space for flashcards, active recall, and daily practice.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

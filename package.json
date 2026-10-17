@@ -7,7 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "postinstall": "prisma generate",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "format": "prettier --write src tests docs README.md '*.json' '*.mjs' '*.ts'",
+    "format:check": "prettier --check src tests docs README.md '*.json' '*.mjs' '*.ts'"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
@@ -30,8 +37,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "prettier": "^3.9.10",
     "prisma": "^7.10.1",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "type": "module"
 }

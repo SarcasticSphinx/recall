@@ -2,9 +2,9 @@
 
 ## Local setup
 
-Use a supported Node.js LTS release, 22.12 or newer. Run `npm ci`, then `npm run dev`. Open http://localhost:3000. The scaffold needs no credentials.
+Use a supported Node.js LTS release, 22.18 or newer. Run `npm ci`, then `npm run dev`. Open http://localhost:3000. The scaffold needs no credentials.
 
-Checks: `npm run lint`, `npm run typecheck`, and `npm run build`.
+Checks: `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`. See [implementation notes](implementation.md) for current coverage and limits.
 
 ## Initialization verification
 
@@ -16,13 +16,17 @@ The initial npm audit reports five high-severity entries in the development-only
 
 ### Neon and Prisma
 
-Create a Neon database. Use its pooled URL for application queries and direct URL for migrations. Initialize Prisma configuration and schema, add Better Auth's generated models and application models, and review migrations before applying them. The Neon driver adapter is installed for runtime queries. No database has been provisioned or migrated.
+Configure `DATABASE_URL` for runtime queries and `DIRECT_URL` for migrations. The initial schema and SQL migration are in `prisma/`. Review the target database and migration, then run `npm run db:deploy`. Run `npm run db:generate` after schema changes. Installation generates the client automatically but does not apply migrations. For later local schema work, use `npm run db:migrate -- --name descriptive_name`.
+
+The initial migration has not been applied to the owner's database. Do not run `migrate reset` against a shared database.
 
 ### Google and Better Auth
 
-Create Google OAuth credentials for a web application and configure the consent screen. Register `http://localhost:3000/api/auth/callback/google` and its production equivalent. Add test users while Google OAuth is in testing mode.
+Create Google OAuth credentials for a web application and configure the consent screen. Register `http://localhost:3000/api/auth/callback/google` and the production equivalent. Configure test users while OAuth is in testing mode.
 
-Copy `.env.example` to `.env`, provide credentials, and generate a secure Better Auth secret. Implement the Prisma-backed auth configuration and Next.js handler. Auth is not wired in this scaffold.
+Set `BETTER_AUTH_URL`, a secure `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` in `.env`. Use the same hostname as `BETTER_AUTH_URL` to test sign-in. Auth routes and the Prisma adapter are implemented; missing credentials produce a clear setup message instead of a fake account.
+
+The signed-out preview saves to browser storage. Signed-in accounts use `/api/workspace`; preview data is never silently uploaded or merged into an account.
 
 ### AI
 
