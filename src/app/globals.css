@@ -2028,3 +2028,543 @@ kbd {
 .card-status {
   color: #706c85;
 }
+
+/* Native dialogs need explicit centering after Tailwind's margin reset. */
+.modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+}
+.theme-control {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--canvas);
+  width: fit-content;
+}
+.theme-control button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 13px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 11px;
+}
+.theme-control button[aria-pressed="true"] {
+  color: var(--ink);
+  background: var(--paper);
+  border-color: var(--line);
+  box-shadow: 0 1px 4px #20221f08;
+}
+.theme-control button:hover {
+  color: var(--ink);
+}
+.theme-compact {
+  padding: 3px;
+  gap: 2px;
+}
+.theme-compact button {
+  width: 30px;
+  min-height: 30px;
+  padding: 5px;
+}
+.theme-compact button span {
+  display: none;
+}
+.appearance-panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 26px 28px;
+  margin-bottom: 20px;
+}
+.appearance-panel h3 {
+  font-size: 14px;
+  font-weight: 500;
+}
+.appearance-panel p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 8px;
+}
+.appearance-panel .theme-control {
+  margin-top: 20px;
+}
+.appearance-panel .appearance-hint {
+  margin-top: 13px;
+  font-size: 10px;
+}
+.signin-modal {
+  width: min(448px, calc(100% - 32px));
+  padding: 28px 36px 30px;
+  text-align: center;
+}
+.signin-modal .modal-heading {
+  display: block;
+  margin: 18px 0 15px;
+}
+.signin-modal .modal-heading .icon-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+}
+.signin-modal h2 {
+  font-size: 33px;
+  line-height: 1.18;
+  max-width: 300px;
+  margin: auto;
+  letter-spacing: -1px;
+}
+.signin-modal .modal-description {
+  max-width: 310px;
+  margin: 0 auto 24px;
+  font-size: 12px;
+  line-height: 1.9;
+}
+.signin-modal .form-hint {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 23px;
+  font-size: 10px;
+}
+.signin-modal .google-button {
+  min-height: 50px;
+  font-size: 12px;
+}
+.signin-modal .google-button > svg {
+  margin-left: auto;
+}
+.signin-modal .google-g {
+  margin-right: auto;
+}
+.signin-modal .feedback {
+  text-align: left;
+}
+.signin-art {
+  height: 160px;
+  position: relative;
+  margin: 4px -16px 0;
+  color: var(--accent);
+}
+.signin-art > svg {
+  position: absolute;
+  width: 100%;
+  height: 140px;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 18%,
+    black 82%,
+    transparent
+  );
+}
+.memory-line {
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: 120 18 20 18 8 18;
+  animation: memory-trace 18s linear infinite;
+  opacity: 0.35;
+}
+.memory-line-two {
+  opacity: 0.2;
+  animation-duration: 24s;
+  animation-direction: reverse;
+}
+.memory-line-three {
+  opacity: 0.15;
+  animation-duration: 30s;
+}
+.memory-orbit {
+  stroke: currentColor;
+  stroke-width: 0.7;
+  stroke-dasharray: 2 7;
+  opacity: 0.2;
+  transform-origin: 160px 75px;
+  animation: memory-turn 90s linear infinite;
+}
+.signin-mark {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  position: absolute;
+  left: 50%;
+  top: 37px;
+  transform: translateX(-50%) rotate(-7deg);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 18px;
+  box-shadow: 0 6px 24px #52506d08;
+}
+.signin-art-caption {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 100%;
+  color: var(--muted);
+  font-size: 7px;
+  letter-spacing: 1.7px;
+}
+@keyframes memory-trace {
+  to {
+    stroke-dashoffset: -404;
+  }
+}
+@keyframes memory-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dark uses warm charcoal and muted lavender, with independent surface colors. */
+:root[data-theme="dark"] {
+  --canvas: #1b1d1b;
+  --paper: #242723;
+  --ink: #e3e6dc;
+  --muted: #a6ad9e;
+  --line: #383d34;
+  --accent: #aaa5d0;
+  --accent-dark: #bdb7df;
+  --soft: #33313f;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+[data-theme="dark"] .sidebar {
+  background: #20231f;
+}
+[data-theme="dark"] .nav-item,
+[data-theme="dark"] .sidebar-deck,
+[data-theme="dark"] .text-button {
+  color: #adb3a3;
+}
+[data-theme="dark"] .nav-item:hover,
+[data-theme="dark"] .sidebar-deck:hover,
+[data-theme="dark"] .sidebar-deck.selected,
+[data-theme="dark"] .icon-button:hover {
+  background: #30352b;
+  color: var(--ink);
+}
+[data-theme="dark"] .nav-item.active {
+  background: #373442;
+  color: #d1cae9;
+}
+[data-theme="dark"] .nav-count {
+  background: #4a435c;
+  color: #e0d8f0;
+}
+[data-theme="dark"] .sidebar-decks {
+  border-color: var(--line);
+}
+[data-theme="dark"] .thought {
+  color: #a8af9c;
+}
+[data-theme="dark"] .thought-flower,
+[data-theme="dark"] .heading-spark {
+  color: #7f8b6a;
+}
+[data-theme="dark"] .avatar {
+  background: #34392e;
+  border-color: #454d3b;
+  color: #d3dbc6;
+}
+[data-theme="dark"] .icon-button {
+  color: #a2ab95;
+}
+[data-theme="dark"] .button {
+  background: #2c3028;
+  border-color: #464d3e;
+  color: #d2d9c8;
+}
+[data-theme="dark"] .button:hover:not(:disabled) {
+  background: #383e32;
+  border-color: #5a6450;
+}
+[data-theme="dark"] .button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #23202f;
+}
+[data-theme="dark"] .button.primary:hover:not(:disabled) {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+[data-theme="dark"] .preview-banner {
+  background: #282c22;
+  border-color: #3b4430;
+  color: #bac4a7;
+}
+[data-theme="dark"] .preview-tag {
+  color: #a0ad8a;
+}
+[data-theme="dark"] .practice-hero {
+  background: #2d2b37;
+  border-color: #413d4e;
+}
+[data-theme="dark"] .hero-copy h2 {
+  color: #e1dcef;
+}
+[data-theme="dark"] .hero-copy h2 em {
+  color: #b6abcf;
+}
+[data-theme="dark"] .hero-copy p,
+[data-theme="dark"] .hero-footnote,
+[data-theme="dark"] .hero-copy p strong {
+  color: #b8b1ca;
+}
+[data-theme="dark"] .pill {
+  border-color: #555064;
+  color: #c3b8d9;
+}
+[data-theme="dark"] .art-card {
+  border-color: #635c76;
+}
+[data-theme="dark"] .art-card-back {
+  background: #484254;
+}
+[data-theme="dark"] .art-card-middle {
+  background: #3c3748;
+}
+[data-theme="dark"] .art-card-front {
+  background: #34303d;
+}
+[data-theme="dark"] .art-question {
+  color: #ddd7e9;
+}
+[data-theme="dark"] .art-question em {
+  color: #b3a6cc;
+}
+[data-theme="dark"] .art-footer,
+[data-theme="dark"] .art-overline,
+[data-theme="dark"] .art-caption {
+  color: #b2a5c7;
+}
+[data-theme="dark"] .art-divider {
+  background: #655a76;
+}
+[data-theme="dark"] .orbit {
+  border-color: #5a516d;
+}
+[data-theme="dark"] .stats-row {
+  background: var(--paper);
+}
+[data-theme="dark"] .stat-top strong {
+  color: var(--ink);
+}
+[data-theme="dark"] .stat-icon {
+  background: #343a2d;
+  color: #bdc7a8;
+}
+[data-theme="dark"] .stat:nth-child(2) .stat-icon {
+  background: #393343;
+  color: #bdb0d4;
+}
+[data-theme="dark"] .stat:nth-child(3) .stat-icon {
+  background: #303c2b;
+  color: #b4c9a4;
+}
+[data-theme="dark"] .subtle-count {
+  background: #34392d;
+  color: #bcc6ab;
+}
+[data-theme="dark"] .deck-cover.indigo,
+[data-theme="dark"] .color-choice.indigo {
+  background: #3b3549;
+  color: #b4a5cc;
+}
+[data-theme="dark"] .deck-cover.peach,
+[data-theme="dark"] .color-choice.peach {
+  background: #45382e;
+  color: #c8ac96;
+}
+[data-theme="dark"] .deck-cover.sage,
+[data-theme="dark"] .color-choice.sage {
+  background: #343f2c;
+  color: #b6c69f;
+}
+[data-theme="dark"] .deck-cover.rose,
+[data-theme="dark"] .color-choice.rose {
+  background: #433238;
+  color: #c8a4b1;
+}
+[data-theme="dark"] .mini-stack > span {
+  background: #ffffff0a;
+  border-color: #ffffff18;
+}
+[data-theme="dark"] .mini-stack > span:last-child {
+  background: #292a29;
+}
+[data-theme="dark"] .new-deck-tile {
+  border-color: #454e39;
+  color: #b7c0a7;
+}
+[data-theme="dark"] .new-deck-tile:hover {
+  background: #293023;
+}
+[data-theme="dark"] .new-deck-plus {
+  background: #31392a;
+}
+[data-theme="dark"] .new-deck-tile > span:last-child,
+[data-theme="dark"] .ready-tag {
+  color: #abbc95;
+}
+[data-theme="dark"] .card-status {
+  background: #373240;
+  color: #c1b4d7;
+}
+[data-theme="dark"] .search-field input,
+[data-theme="dark"] .field input,
+[data-theme="dark"] .field textarea,
+[data-theme="dark"] select,
+[data-theme="dark"] .number-input {
+  background: var(--canvas);
+  color: var(--ink);
+  border-color: var(--line);
+}
+[data-theme="dark"] .field {
+  color: #b3bca5;
+}
+[data-theme="dark"] .field input::placeholder,
+[data-theme="dark"] .field textarea::placeholder {
+  color: #8e9686;
+}
+[data-theme="dark"] .page-heading p,
+[data-theme="dark"] .section-heading p,
+[data-theme="dark"] .stat-top span,
+[data-theme="dark"] .stat p,
+[data-theme="dark"] .deck-meta,
+[data-theme="dark"] .page-footer,
+[data-theme="dark"] .modal-description,
+[data-theme="dark"] .form-hint,
+[data-theme="dark"] .keyboard-hint,
+[data-theme="dark"] .settings-row p,
+[data-theme="dark"] .account-panel p,
+[data-theme="dark"] .ai-note p,
+[data-theme="dark"] .card-content p {
+  color: var(--muted);
+}
+[data-theme="dark"] .feedback {
+  background: #2c3624;
+  border-color: #455537;
+  color: #c2d2ad;
+}
+[data-theme="dark"] .feedback.error,
+[data-theme="dark"] .danger {
+  background: #3d2a25;
+  border-color: #66463b;
+  color: #e0b5a2;
+}
+[data-theme="dark"] .danger:hover:not(:disabled) {
+  background: #52352d;
+  border-color: #80584a;
+}
+[data-theme="dark"] .setup-note {
+  background: #35303f;
+  border-color: #51485f;
+  color: #c6b7da;
+}
+[data-theme="dark"] .setup-note strong {
+  color: #e0d5ee;
+}
+[data-theme="dark"] .google-g {
+  color: #c4b7e1;
+}
+[data-theme="dark"] .modal::backdrop {
+  background: #080a08a8;
+}
+[data-theme="dark"] .study-progress {
+  background: #34382d;
+}
+[data-theme="dark"] .review-label {
+  color: #a8b29b;
+}
+[data-theme="dark"] .answer-reveal p {
+  color: #c0cbb2;
+}
+[data-theme="dark"] .recall-prompt p {
+  color: #acb49f;
+}
+[data-theme="dark"] .rating-0 {
+  background: #3e2d26;
+  border-color: #655043;
+  color: #d6b19a;
+}
+[data-theme="dark"] .rating-1 {
+  background: #3b3625;
+  border-color: #5d553a;
+  color: #d0c08e;
+}
+[data-theme="dark"] .rating-2 {
+  background: #2f3c29;
+  border-color: #4a5c3e;
+  color: #b5cc9f;
+}
+[data-theme="dark"] .rating-3 {
+  background: #363040;
+  border-color: #544965;
+  color: #c7b5dc;
+}
+[data-theme="dark"] .completion-mark {
+  background: #333f29;
+  color: #bbd29f;
+}
+[data-theme="dark"] .completion p {
+  color: var(--muted);
+}
+[data-theme="dark"] kbd {
+  border-color: #515843;
+}
+@media (max-width: 640px) {
+  .topbar > span > .muted,
+  .topbar .breadcrumb {
+    display: none;
+  }
+  .theme-compact {
+    padding: 2px;
+  }
+  .theme-compact button {
+    width: 27px;
+    min-height: 30px;
+    padding: 5px;
+  }
+  .appearance-panel {
+    padding: 23px 20px;
+  }
+  .signin-modal {
+    padding: 22px 25px 25px;
+  }
+  .signin-modal h2 {
+    font-size: 30px;
+  }
+  .signin-art {
+    height: 145px;
+    margin-top: 0;
+  }
+  .signin-art > svg {
+    height: 125px;
+  }
+  .signin-mark {
+    top: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+  [data-theme="dark"] .sidebar {
+    background: #20231ff5;
+  }
+}

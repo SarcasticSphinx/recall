@@ -29,6 +29,8 @@ Candidates: notes to editable flashcard drafts (recommended first experiment), c
 
 Proposed theme: a quiet study desk. Warm ivory, charcoal text, a muted indigo accent, generous spacing, and readable typography.
 
+Support Light, Dark, and System themes, with the appearance preference saved on each device. The dark palette uses warm charcoal surfaces and muted lavender accents.
+
 Use short CSS animations for reveal, transitions, button feedback, and progress. Respect reduced-motion preferences. Avoid animation delays in the review loop.
 
 ## Deferred scope

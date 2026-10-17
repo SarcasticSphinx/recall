@@ -1,6 +1,7 @@
 # Recall — Software Requirements Specification
 
-Version: 0.1  
+Version: 0.2
+
 Date: 17 October 2026  
 Status: Initial requirements baseline for review  
 Product: Recall, a dedicated active recall application
@@ -131,15 +132,16 @@ Initial reviews use library-supported scheduler settings rather than a custom sc
 
 ### 6.4 Today, preferences, and synchronization
 
-| ID      | Requirement                                                                                                                  | Status   |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------- | -------- |
-| HOME-01 | Today shall display due-card and available-new-card counts and a primary Start review action.                                | Baseline |
-| HOME-02 | The interface shall explain empty states, including no decks, no cards, and no cards ready to study.                         | Baseline |
-| PREF-01 | The learner shall be able to configure a daily new-card limit and timezone.                                                  | Baseline |
-| PREF-02 | A new card shall be one with no accepted reviews. Daily introduction counts shall use the learner's configured local date.   | Baseline |
-| SYNC-01 | Server-persisted data shall be the source of truth across signed-in devices.                                                 | Baseline |
-| SYNC-02 | The app shall revalidate relevant data on navigation and when returning to focus.                                            | Baseline |
-| SYNC-03 | Without connectivity, the app shall clearly report that changes/reviews cannot be saved. Offline review queues are deferred. | Baseline |
+| ID      | Requirement                                                                                                                                                                 | Status    |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| HOME-01 | Today shall display due-card and available-new-card counts and a primary Start review action.                                                                               | Baseline  |
+| HOME-02 | The interface shall explain empty states, including no decks, no cards, and no cards ready to study.                                                                        | Baseline  |
+| PREF-01 | The learner shall be able to configure a daily new-card limit and timezone.                                                                                                 | Baseline  |
+| PREF-02 | A new card shall be one with no accepted reviews. Daily introduction counts shall use the learner's configured local date.                                                  | Baseline  |
+| PREF-03 | The learner shall be able to select Light, Dark, or System appearance. This preference shall persist per browser/device; System shall respond to device appearance changes. | Confirmed |
+| SYNC-01 | Server-persisted data shall be the source of truth across signed-in devices.                                                                                                | Baseline  |
+| SYNC-02 | The app shall revalidate relevant data on navigation and when returning to focus.                                                                                           | Baseline  |
+| SYNC-03 | Without connectivity, the app shall clearly report that changes/reviews cannot be saved. Offline review queues are deferred.                                                | Baseline  |
 
 The default daily limit and timezone-change behavior are undecided. A session's exact cursor need not transfer between devices; saved review progress must transfer. Immediate push updates and WebSockets are not baseline requirements.
 
@@ -171,7 +173,7 @@ No AI provider, model, free-tier assumption, SDK, vector database, chatbot, or a
 
 ## 8. Interface and interaction requirements
 
-The confirmed direction is minimal, interactive, and animated. The **proposed** visual theme is a quiet study desk: warm ivory surfaces, charcoal text, a muted indigo accent, subtle borders, and generous spacing. Exact brand tokens and typography remain open.
+The confirmed direction is minimal, interactive, and animated. The **proposed** visual theme is a quiet study desk: warm ivory surfaces, charcoal text, a muted indigo accent, subtle borders, and generous spacing. Exact brand tokens and typography remain open. Light, Dark, and System appearance modes are now required; dark uses warm charcoal and muted lavender.
 
 | ID    | Requirement                                                                                                     | Status   |
 | ----- | --------------------------------------------------------------------------------------------------------------- | -------- |
@@ -304,7 +306,7 @@ The first complete product milestone is creating a deck on Mac, reviewing it on 
 | OPEN-04 | FSRS initial settings and learning/relearning behavior                               | Scheduling acceptance tests                |
 | OPEN-05 | Card/deck field limits and card-edit scheduling policy                               | Schema and editor implementation           |
 | OPEN-06 | Deletion/retention policy, account deletion/export, and backup/recovery expectations | Destructive operations and public launch   |
-| OPEN-07 | Final brand tokens, typography, dark mode, and installation scope                    | UI polish                                  |
+| OPEN-07 | Final brand tokens, typography, and installation scope                               | UI polish                                  |
 | OPEN-08 | Hosting, deployment/DB regions, domain, and browser/performance test profiles        | Deployment and release validation          |
 
 ## 15. Related documents and maintenance

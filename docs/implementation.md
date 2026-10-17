@@ -37,6 +37,17 @@ These are initial implementation defaults, not claims that the owner individuall
 - Webpack production build
 - In-browser preview check: create deck, create card, conceal/reveal answer, rate with keyboard, complete session, reload, and verify activity/card persistence
 
-The cloud database migration has not been applied. Real Google authentication, database transactions, and cross-device cloud persistence have not been exercised end to end. The account UI stays unavailable until Google credentials are configured. These remain release gates, not completed tests.
+The cloud database migration was applied during subsequent sign-in troubleshooting (see below). Real Google browser authentication, database transactions, and cross-device cloud persistence have not been exercised end to end. The account UI stays unavailable until Google credentials are configured. These remain release gates, not completed tests.
 
 AI has no provider calls or API-key usage in this slice. The UI labels AI as planned.
+
+## Interface refinement: themes and sign-in
+
+- All native dialogs explicitly center in the viewport, including after the CSS reset.
+- Sign-in has a compact editorial layout and gently animated SVG linework; reduced motion disables decorative animation.
+- Light, Dark, and System controls are available in the header and Preferences.
+- Theme preference is stored per browser/device, initializes before content paints, and follows OS appearance when System is selected. It does not change account study preferences.
+- The dark palette covers navigation, decks, editing dialogs, review cards, ratings, feedback, and sign-in.
+- Google remains the implemented sign-in method. Email magic links are a recommended later alternative; email/password registration is not enabled.
+
+During development sign-in troubleshooting, the initial migration was applied to the configured Neon database and the OAuth initiation endpoint returned the expected Google authorization URL. Full browser login and cross-device cloud behavior still require end-to-end verification.

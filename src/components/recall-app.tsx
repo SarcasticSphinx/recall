@@ -26,6 +26,7 @@ import {
   type WorkspaceAction,
 } from "@/lib/validation";
 import { Icon } from "./icon";
+import { ThemeControl } from "./theme-control";
 
 type Props = {
   user: { name: string; email: string } | null;
@@ -52,7 +53,9 @@ function Modal({
   title,
   close,
   children,
+  variant,
 }: {
+  variant?: "signin";
   title: string;
   close: () => void;
   children: ReactNode;
@@ -75,17 +78,52 @@ function Modal({
   return (
     <dialog
       ref={dialog}
-      className="modal"
+      className={`modal ${variant === "signin" ? "signin-modal" : ""}`}
+      aria-labelledby="modal-title"
       onCancel={(e) => {
         e.preventDefault();
         close();
       }}
       onClick={(e) => {
-        if (e.target === e.currentTarget) close();
+        if (e.target === e.currentTarget) {
+          const bounds = e.currentTarget.getBoundingClientRect();
+          if (
+            e.clientX < bounds.left ||
+            e.clientX > bounds.right ||
+            e.clientY < bounds.top ||
+            e.clientY > bounds.bottom
+          )
+            close();
+        }
       }}
     >
+      {variant === "signin" && (
+        <div className="signin-art" aria-hidden="true">
+          <svg viewBox="0 0 320 150" fill="none">
+            <path
+              className="memory-line memory-line-one"
+              d="M0 104C51 104 59 35 111 35S188 118 233 80 283 45 320 48"
+            />
+            <path
+              className="memory-line memory-line-two"
+              d="M0 120C59 120 79 56 128 56S183 104 225 61 281 27 320 29"
+            />
+            <path
+              className="memory-line memory-line-three"
+              d="M0 84C48 84 71 17 116 17S191 88 236 46 287 13 320 12"
+            />
+            <circle className="memory-orbit" cx="160" cy="75" r="48" />
+          </svg>
+          <span className="signin-mark">
+            <Icon name="cards" size={30} />
+          </span>
+          <span className="signin-art-caption">
+            A LITTLE PRACTICE. A LASTING TRACE.
+          </span>
+        </div>
+      )}
       <div className="modal-heading">
-        <h2>{title}</h2>
+        <h2 id="modal-title">{title}</h2>
         <button
           className="icon-button"
           onClick={close}
@@ -527,6 +565,7 @@ export function RecallApp({
                 : "Preferences"}
           </span>
           <div className="topbar-right">
+            <ThemeControl compact />
             <span className="date-label">{date}</span>
             {isPreview && (
               <button
@@ -933,6 +972,16 @@ export function RecallApp({
                   <p>Keep your practice small, steady, and personal.</p>
                 </div>
               </div>
+              <section className="appearance-panel">
+                <div>
+                  <h3>Set the mood.</h3>
+                  <p>A lighter day, a quieter night, or follow your device.</p>
+                </div>
+                <ThemeControl />
+                <p className="appearance-hint">
+                  Saved on this device. System follows your device’s appearance.
+                </p>
+              </section>
               <form
                 className="settings-panel"
                 key={`${workspace.preferences.timezone}-${workspace.preferences.newCardLimit}`}
@@ -1049,6 +1098,7 @@ export function RecallApp({
 
       {modal && (
         <Modal
+          variant={modal.type === "signin" ? "signin" : undefined}
           title={
             modal.type === "deck"
               ? modal.deck
@@ -1060,7 +1110,7 @@ export function RecallApp({
                   : "One good question."
                 : modal.type === "delete"
                   ? `Delete this ${modal.kind}?`
-                  : "Your learning, everywhere."
+                  : "A little space for your mind."
           }
           close={() => {
             if (!busy) {
@@ -1204,8 +1254,8 @@ export function RecallApp({
           {modal.type === "signin" && (
             <>
               <p className="modal-description">
-                Keep your cards and progress in one place, whether you&apos;re
-                at your desk or on the go.
+                Pick up where curiosity left you. Your cards, your practice,
+                together wherever you go.
               </p>
               {!authEnabled && (
                 <div className="setup-note">
@@ -1225,10 +1275,11 @@ export function RecallApp({
                   G
                 </span>
                 {busy ? "Opening Google…" : "Continue with Google"}
+                {!busy && <Icon name="arrow" size={17} />}
               </button>
               <p className="form-hint">
-                Your browser preview stays separate. Signing in opens your
-                personal cloud workspace.
+                New here? Your account is created when you sign in. Your browser
+                preview stays separate.
               </p>
             </>
           )}

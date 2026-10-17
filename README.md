@@ -42,7 +42,7 @@ For restricted environments, use `npm run build -- --webpack`.
 
 Next.js App Router, React, TypeScript, Tailwind/CSS animations, Neon Postgres, Prisma, Better Auth, ts-fsrs, and Zod.
 
-Implemented: Today dashboard, deck/card management, card search, keyboard-accessible review sessions, FSRS scheduling, summaries, preferences, browser preview, authenticated workspace API, Prisma schema/initial migration, and Google auth configuration.
+Implemented: Light/Dark/System themes, a centered animated sign-in dialog, Today dashboard, deck/card management, card search, keyboard-accessible review sessions, FSRS scheduling, summaries, preferences, browser preview, authenticated workspace API, Prisma schema/initial migration, and Google auth configuration.
 
 Pending: live cloud/auth integration verification, AI workflow selection and integration, installation support, and deployment. Account deletion/export and backup operations remain outside this first slice.
 

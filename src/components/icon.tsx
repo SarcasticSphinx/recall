@@ -1,6 +1,13 @@
 import type { CSSProperties } from "react";
 
 const paths: Record<string, React.ReactNode> = {
+  moon: <path d="M20.5 13a8.5 8.5 0 0 1-9.5-9.5A8.5 8.5 0 1 0 20.5 13Z" />,
+  monitor: (
+    <>
+      <rect x="3" y="4" width="18" height="13" rx="2" />
+      <path d="M8 21h8m-4-4v4" />
+    </>
+  ),
   cards: (
     <>
       <rect x="7" y="4" width="13" height="16" rx="3" />
