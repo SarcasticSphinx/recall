@@ -7,6 +7,7 @@ import {
   useState,
   type FormEvent,
   type ReactNode,
+  type CSSProperties,
 } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
@@ -272,6 +273,8 @@ export function RecallApp({
     setSelectedDeck(null);
     setSearch("");
     setError("");
+    if (window.matchMedia("(max-width: 640px)").matches)
+      window.scrollTo({ top: 0, behavior: "instant" });
     void refresh();
   }
   function startStudy(deckId?: string) {
@@ -472,27 +475,39 @@ export function RecallApp({
           recall<span className="brand-dot">.</span>
         </Link>
         <div className="sidebar-caption">YOUR LITTLE LEARNING SPACE</div>
-        <nav aria-label="Main navigation">
+        <nav
+          aria-label="Main navigation"
+          style={
+            {
+              "--nav-index": view === "today" ? 0 : view === "decks" ? 1 : 2,
+            } as CSSProperties
+          }
+        >
+          <span className="dock-selection" aria-hidden="true" />
           <button
             className={`nav-item ${view === "today" ? "active" : ""}`}
+            aria-current={view === "today" ? "page" : undefined}
             onClick={() => navigate("today")}
           >
             <Icon name="sun" />
-            Today<span className="nav-count">{queue.length}</span>
+            <span className="nav-label">Today</span>
+            <span className="nav-count">{queue.length}</span>
           </button>
           <button
             className={`nav-item ${view === "decks" ? "active" : ""}`}
+            aria-current={view === "decks" ? "page" : undefined}
             onClick={() => navigate("decks")}
           >
             <Icon name="grid" />
-            My decks
+            <span className="nav-label">My decks</span>
           </button>
           <button
             className={`nav-item ${view === "settings" ? "active" : ""}`}
+            aria-current={view === "settings" ? "page" : undefined}
             onClick={() => navigate("settings")}
           >
             <Icon name="settings" />
-            Preferences
+            <span className="nav-label">Preferences</span>
           </button>
         </nav>
         <div className="sidebar-decks">
@@ -555,7 +570,17 @@ export function RecallApp({
 
       <div className="main-shell">
         <header className="topbar">
-          <span>
+          <button
+            className="mobile-brand"
+            onClick={() => navigate("today")}
+            aria-label="Recall home"
+          >
+            <Icon name="cards" size={22} />
+            <span>
+              recall<span className="brand-dot">.</span>
+            </span>
+          </button>
+          <span className="desktop-breadcrumb">
             <span className="muted">Workspace</span>
             <span className="breadcrumb">/</span>
             {view === "today"
@@ -575,7 +600,8 @@ export function RecallApp({
                   setModal({ type: "signin" });
                 }}
               >
-                Sign in to sync
+                <span className="sync-label">Sign in to sync</span>
+                <span className="mobile-sync-label">Sync</span>
                 <Icon name="arrow" size={15} />
               </button>
             )}

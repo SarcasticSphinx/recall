@@ -2568,3 +2568,361 @@ kbd {
     background: #20231ff5;
   }
 }
+
+/* Appearance controls: a single orbiting toggle and a sliding preference pill. */
+.theme-toggle {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+  color: #9a8053;
+  overflow: hidden;
+  box-shadow: 0 2px 7px #26272204;
+}
+.theme-toggle:hover {
+  background: var(--soft);
+  border-color: #a7a1bb;
+}
+.theme-toggle-orbit {
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.theme-toggle-orbit > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.25s;
+}
+.theme-toggle-sun {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+.theme-toggle-moon {
+  opacity: 0;
+  transform: rotate(-75deg) scale(0.3);
+}
+.theme-toggle.is-dark .theme-toggle-sun {
+  opacity: 0;
+  transform: rotate(75deg) scale(0.3);
+}
+.theme-toggle.is-dark .theme-toggle-moon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+[data-theme="dark"] .theme-toggle {
+  color: #d0c2ed;
+  background: #302d38;
+  border-color: #4b445a;
+}
+[data-theme="dark"] .theme-toggle:hover {
+  background: #3a3445;
+}
+.theme-control {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  padding: 5px;
+  border-radius: 14px;
+  min-width: 282px;
+}
+.theme-selection {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  width: calc((100% - 10px) / 3);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 2px 7px #20221f09;
+  transform: translateX(calc(var(--theme-index) * 100%));
+  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+.theme-control button {
+  position: relative;
+  z-index: 1;
+  min-height: 42px;
+  padding: 10px;
+  background: transparent;
+  border-color: transparent;
+  gap: 7px;
+}
+.theme-control button[aria-pressed="true"] {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--accent);
+}
+.theme-control button > svg {
+  transition: transform 0.3s;
+}
+.theme-control button[aria-pressed="true"] > svg {
+  transform: rotate(-8deg);
+}
+.mobile-brand,
+.mobile-sync-label,
+.dock-selection {
+  display: none;
+}
+
+/* View-transition snapshots keep text crisp while the new palette blooms out. */
+::view-transition-group(root) {
+  animation: none;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+.theme-fading,
+.theme-fading * {
+  transition:
+    background-color 0.26s ease,
+    border-color 0.26s ease,
+    color 0.26s ease !important;
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    height: calc(72px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 20px 0;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(20px) saturate(1.3);
+    -webkit-backdrop-filter: blur(20px) saturate(1.3);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 65%, transparent);
+  }
+  .desktop-breadcrumb {
+    display: none;
+  }
+  .mobile-brand {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 0;
+    background: none;
+    border: 0;
+    color: var(--ink);
+    min-height: 44px;
+  }
+  .mobile-brand > svg {
+    color: var(--accent);
+    transform: rotate(-10deg);
+  }
+  .mobile-brand > span {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -1.5px;
+  }
+  .mobile-brand .brand-dot {
+    margin-left: 0;
+  }
+  .topbar-right {
+    gap: 10px;
+  }
+  .topbar .small-button {
+    min-height: 40px;
+    padding: 10px 15px;
+    font-size: 11px;
+    gap: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    border-radius: 22px;
+    box-shadow: 0 2px 8px #22241d0a;
+  }
+  .topbar .small-button:hover {
+    background: var(--accent);
+    color: var(--canvas);
+    border-color: var(--accent);
+  }
+  .topbar .sync-label {
+    display: none;
+  }
+  .mobile-sync-label {
+    display: inline;
+  }
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+  }
+  .sidebar {
+    inset: auto auto calc(12px + env(safe-area-inset-bottom)) 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 390px;
+    height: 72px;
+    padding: 6px;
+    border: 1px solid color-mix(in srgb, var(--line) 85%, transparent);
+    border-radius: 25px;
+    background: color-mix(in srgb, var(--paper) 89%, transparent);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    box-shadow:
+      0 8px 36px #22271d12,
+      0 1px 3px #22271d08,
+      inset 0 1px 0 #ffffff70;
+    isolation: isolate;
+  }
+  .sidebar nav {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+  .dock-selection {
+    display: block;
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(100% / 3);
+    border-radius: 19px;
+    background: #eae7f3;
+    box-shadow:
+      inset 0 1px 0 #ffffff60,
+      0 2px 4px #4a415b05;
+    transform: translateX(calc(var(--nav-index) * 100%));
+    transition:
+      transform 0.36s cubic-bezier(0.22, 0.8, 0.2, 1),
+      background-color 0.25s;
+    pointer-events: none;
+  }
+  .nav-item {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 58px;
+    border-radius: 19px;
+    padding: 7px 3px;
+    gap: 5px;
+    color: #8a8e7e;
+    background: none;
+    font-size: 9px;
+    letter-spacing: 0.1px;
+  }
+  .nav-item:hover,
+  .nav-item.active,
+  .nav-item.active:hover {
+    background: transparent;
+  }
+  .nav-item.active {
+    color: #655b89;
+  }
+  .nav-item > svg {
+    width: 21px;
+    height: 21px;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .nav-item.active > svg {
+    transform: translateY(-1px);
+    animation: dock-arrive 0.35s ease-out;
+  }
+  .nav-item:active:not(:disabled) {
+    transform: scale(0.94);
+  }
+  .nav-label {
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .nav-item.active .nav-label {
+    opacity: 1;
+    font-weight: 600;
+  }
+  .nav-count {
+    top: 5px;
+    left: calc(50% + 9px);
+    min-width: 16px;
+    height: 16px;
+    font-size: 8px;
+    border-radius: 6px;
+    background: #d5cde6;
+    color: #655280;
+    border: 1px solid #eae7f3;
+  }
+  .main-shell {
+    padding-bottom: calc(108px + env(safe-area-inset-bottom));
+  }
+  .appearance-panel .theme-control {
+    min-width: 0;
+    width: 100%;
+  }
+  [data-theme="dark"] .sidebar {
+    background: #252721e8;
+    border-color: #434439;
+    box-shadow:
+      0 10px 40px #00000040,
+      inset 0 1px 0 #ffffff08;
+  }
+  [data-theme="dark"] .dock-selection {
+    background: #41384e;
+    box-shadow: inset 0 1px 0 #ffffff09;
+  }
+  [data-theme="dark"] .nav-item {
+    color: #a4ac96;
+  }
+  [data-theme="dark"] .nav-item:hover,
+  [data-theme="dark"] .nav-item.active {
+    background: transparent;
+  }
+  [data-theme="dark"] .nav-item.active {
+    color: #d8c8ed;
+  }
+  [data-theme="dark"] .nav-count {
+    background: #655274;
+    color: #f2e7ff;
+    border-color: #41384e;
+  }
+  [data-theme="dark"] .topbar .small-button {
+    background: #d9d2e9;
+    color: #302a3d;
+    border-color: #d9d2e9;
+  }
+}
+@keyframes dock-arrive {
+  0% {
+    transform: translateY(1px) scale(0.9);
+  }
+  65% {
+    transform: translateY(-3px) scale(1.06);
+  }
+  100% {
+    transform: translateY(-1px) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-fading,
+  .theme-fading * {
+    transition: none !important;
+  }
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+@media (max-width: 640px) {
+  .appearance-panel .theme-control button {
+    font-size: 10px;
+    padding: 10px 6px;
+    gap: 5px;
+  }
+}

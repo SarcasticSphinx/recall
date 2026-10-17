@@ -51,3 +51,12 @@ AI has no provider calls or API-key usage in this slice. The UI labels AI as pla
 - Google remains the implemented sign-in method. Email magic links are a recommended later alternative; email/password registration is not enabled.
 
 During development sign-in troubleshooting, the initial migration was applied to the configured Neon database and the OAuth initiation endpoint returned the expected Google authorization URL. Full browser login and cross-device cloud behavior still require end-to-end verification.
+
+## Mobile navigation and appearance motion
+
+- Mobile header uses a compact Recall home action, a single animated sun/moon theme toggle, and a Sync action. It remains visible while scrolling.
+- The bottom navigation is a floating, translucent dock with safe-area spacing, a sliding selection surface, active icon feedback, and `aria-current` for the selected screen.
+- Switching mobile sections returns to the top of the new section. Desktop navigation retains its sidebar layout.
+- Appearance preferences use a sliding Light/Dark/System selector. The compact toggle switches directly between light and dark; System remains selectable in Preferences.
+- Where supported, theme changes reveal the new palette from the pressed control using the View Transition API. Older browsers receive a short color fade. Reduced-motion users receive immediate theme changes without decorative movement.
+- Rapid theme changes skip an in-progress transition and retain the latest choice. Storage failures fall back to an in-memory preference.
