@@ -55,8 +55,16 @@ During development sign-in troubleshooting, the initial migration was applied to
 ## Mobile navigation and appearance motion
 
 - Mobile header uses a compact Recall home action, a single animated sun/moon theme toggle, and a Sync action. It remains visible while scrolling.
-- The bottom navigation is a floating, translucent dock with safe-area spacing, a sliding selection surface, active icon feedback, and `aria-current` for the selected screen.
+- The bottom navigation is a compact floating dock with safe-area spacing, a sliding selection surface, active icon feedback, and `aria-current` for the selected screen. Mobile header/dock surfaces use solid colors rather than backdrop blur to reduce rendering work.
 - Switching mobile sections returns to the top of the new section. Desktop navigation retains its sidebar layout.
 - Appearance preferences use a sliding Light/Dark/System selector. The compact toggle switches directly between light and dark; System remains selectable in Preferences.
-- Where supported, theme changes reveal the new palette from the pressed control using the View Transition API. Older browsers receive a short color fade. Reduced-motion users receive immediate theme changes without decorative movement.
-- Rapid theme changes skip an in-progress transition and retain the latest choice. Storage failures fall back to an in-memory preference.
+- Theme changes use a short, scoped 180 ms color fade on existing surfaces. The previous page-snapshot/circular-mask transition was removed to reduce work on mobile devices. Reduced-motion users receive immediate changes.
+- Rapid theme changes retarget the existing CSS fade and retain the latest choice without queuing page animations. Storage failures fall back to an in-memory preference.
+
+## Compact mobile layout
+
+- Mobile deck tiles use compact horizontal rows with a small color thumbnail instead of tall covers. The create-deck tile follows the same compact rhythm.
+- The dock is 62 px high and the mobile header is 64 px plus safe-area insets. Content retains bottom space for dock access.
+- Button labels stay on one line. Heading actions move into their own row when necessary; card toolbars and dialog actions stack at the narrowest breakpoint instead of compressing labels.
+- The Today review action fills the available card width rather than sharing a narrow text column with decoration.
+- Browser checks covered the narrow mobile Today and deck views, theme switching, and unbroken New deck/review labels. No physical low-end-device performance benchmark was run.
