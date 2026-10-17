@@ -39,6 +39,7 @@ export function TodayPage() {
           <Icon name="spark" size={42} />
         </span>
       </div>
+      <ActivityChart />
       <section className="practice-hero" aria-labelledby="practice-title">
         <div className="hero-copy">
           <span className="pill">
@@ -165,7 +166,6 @@ export function TodayPage() {
           <span>Create a deck</span>
         </button>
       </div>
-      <ActivityChart />
       <footer className="page-footer">
         <Icon name="spark" size={15} />
         <span>

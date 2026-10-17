@@ -1,69 +1,49 @@
 "use client";
 import { useRef, useState, type ReactNode } from "react";
-import { ImagePlus, LoaderCircle, UploadCloud, Paperclip } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ImagePlus, UploadCloud } from "lucide-react";
 import { useWorkspace } from "@/components/workspace/workspace-context";
+import { validateImageFile, type ImagePurpose } from "@/lib/pending-images";
+/** A file picker only. Uploading is owned by the enclosing form's Save action. */
 export function ImageUpload({
   purpose,
-  onUpload,
-  onBusyChange,
+  onSelect,
   dropzone = false,
   children,
   label,
+  disabled = false,
 }: {
-  purpose: "deck" | "question" | "answer";
-  onUpload: (url: string) => void;
-  onBusyChange?: (busy: boolean) => void;
+  purpose: ImagePurpose;
+  onSelect: (file: File) => void;
   dropzone?: boolean;
   children?: ReactNode;
   label?: string;
+  disabled?: boolean;
 }) {
-  const { isPreview, uploadsEnabled } = useWorkspace();
+  const { isPreview, uploadsEnabled, setError } = useWorkspace();
   const input = useRef<HTMLInputElement>(null);
-  const [busy, setBusy] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const [error, setError] = useState("");
-  const [filename, setFilename] = useState("");
-  const disabled = busy || isPreview || !uploadsEnabled;
-  async function upload(file?: File) {
-    if (!file || disabled) return;
-    setError("");
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      setError("Choose a JPEG, PNG, or WebP image.");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Choose an image under 5 MB.");
-      return;
-    }
-    setBusy(true);
-    onBusyChange?.(true);
+  const unavailable = disabled || isPreview || !uploadsEnabled;
+  const hint = isPreview
+    ? "Sign in to attach images."
+    : !uploadsEnabled
+      ? "Cloudinary uploads need to be configured."
+      : "Selected images upload when you save.";
+  function select(file?: File) {
+    if (!file || unavailable) return;
     try {
-      const form = new FormData();
-      form.append("file", file);
-      form.append("purpose", purpose);
-      const response = await fetch("/api/uploads", {
-        method: "POST",
-        body: form,
-      });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.message || "Upload failed.");
-      onUpload(body.url);
-      setFilename(file.name);
+      validateImageFile(file);
+      setError("");
+      onSelect(file);
     } catch (error) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "The image could not be uploaded.",
+        error instanceof Error ? error.message : "Choose a valid image.",
       );
-    } finally {
-      setBusy(false);
-      onBusyChange?.(false);
-      if (input.current) input.current.value = "";
     }
   }
   return (
-    <div className={`image-upload ${dropzone ? "cover-upload" : ""}`}>
+    <div
+      className={`image-upload ${dropzone ? "cover-upload" : "image-picker-compact"}`}
+    >
       <input
         ref={input}
         type="file"
@@ -71,76 +51,52 @@ export function ImageUpload({
         hidden
         style={{ display: "none" }}
         tabIndex={-1}
-        aria-label={`Upload ${purpose} image`}
-        disabled={disabled}
+        aria-label={`Choose ${purpose} image`}
+        disabled={unavailable}
         onChange={(event) => {
-          void upload(event.target.files?.[0]);
+          select(event.target.files?.[0]);
           event.target.value = "";
         }}
       />
       {dropzone ? (
-        <button
-          type="button"
-          className={`upload-dropzone ${dragging ? "is-dragging" : ""}`}
-          disabled={disabled}
-          onClick={() => input.current?.click()}
-          onDragOver={(event) => {
-            event.preventDefault();
-            if (!disabled) setDragging(true);
-          }}
-          onDragLeave={() => setDragging(false)}
-          onDrop={(event) => {
-            event.preventDefault();
-            setDragging(false);
-            void upload(event.dataTransfer.files[0]);
-          }}
-        >
-          {children}
-          <span className="cover-upload-caption">
-            {busy ? (
-              <LoaderCircle className="spin" size={18} />
-            ) : (
+        <>
+          <button
+            type="button"
+            className={`upload-dropzone ${dragging ? "is-dragging" : ""}`}
+            disabled={unavailable}
+            onClick={() => input.current?.click()}
+            onDragOver={(event) => {
+              event.preventDefault();
+              if (!unavailable) setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(event) => {
+              event.preventDefault();
+              setDragging(false);
+              select(event.dataTransfer.files[0]);
+            }}
+          >
+            {children}
+            <span className="cover-upload-caption">
               <UploadCloud size={18} />
-            )}
-            <strong>
-              {busy ? "Uploading your cover…" : label || "Upload a cover"}
-            </strong>
-            <span>Drop an image here or browse files</span>
-            <small>JPEG, PNG, WebP · up to 5 MB</small>
-          </span>
-        </button>
+              <strong>{label || "Choose a cover image"}</strong>
+              <span>Drop an image here or browse files</span>
+              <small>JPEG, PNG, WebP · up to 5 MB</small>
+            </span>
+          </button>
+          <p className="form-hint">{hint}</p>
+        </>
       ) : (
         <button
           type="button"
-          className="button"
-          disabled={disabled}
+          className="editor-tool"
+          disabled={unavailable}
+          aria-label={`Add ${purpose} image`}
+          title={unavailable ? hint : `Add ${purpose} image · uploads on Save`}
           onClick={() => input.current?.click()}
         >
-          {busy ? (
-            <LoaderCircle size={16} className="spin" />
-          ) : (
-            <ImagePlus size={16} />
-          )}{" "}
-          {busy ? "Uploading…" : label || "Attach image"}
+          <ImagePlus size={16} />
         </button>
-      )}
-      {filename && (
-        <Badge variant="secondary" className="attachment-chip">
-          <Paperclip size={13} />
-          <span>{filename}</span>
-        </Badge>
-      )}
-      {(isPreview || !uploadsEnabled) && (
-        <p className="form-hint">
-          {isPreview
-            ? "Sign in to upload images."
-            : "Cloudinary uploads need to be configured."}
-        </p>
-      )}
-      {error && (
-        <p className="field-error" role="alert">
-          {error}
-        </p>
       )}
     </div>
   );

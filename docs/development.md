@@ -56,3 +56,9 @@ Cloudinary delivery URLs are public: use images appropriate for public delivery.
 ## Interface structure
 
 `recall-app.tsx` composes the workspace provider and shell. Page/layout/editor components live in `src/components/workspace`; shared rich authoring lives in `src/components/editor`. State and actions live in `src/hooks/use-workspace-controller.ts`. shadcn primitives live in `src/components/ui` and use the existing theme tokens. Edit refresh copy in `src/lib/page-copy.ts`.
+
+## Image draft lifecycle
+
+The file picker performs no network requests. `use-pending-images.ts` owns browser object URLs and pending files while an editor is open. Save validates the final text/structure, uploads only referenced images, resolves their Cloudinary URLs, and sends the workspace mutation. Successful uploads are cached for retries within that dialog. Edits, Cancel, and removed/replaced selections do not trigger uploads. Closing the editor revokes object URLs; unsaved local previews are never sent to the workspace API or persisted as card content.
+
+The rich editor exposes a current-document reader to Save rather than relying solely on parent update timing. Practice rendering has its own `ReviewCard` component and eagerly loads visible images. Tests render the real review card through the save/preview/queue path, check image conceal/reveal, cover icons, upload failure recovery, and retry caching. The TSX test loader provides JSX/alias support; the component test normalizes Node's Next Image import interop while retaining the real Image implementation.

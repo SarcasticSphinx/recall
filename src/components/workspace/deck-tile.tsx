@@ -33,6 +33,11 @@ export function DeckTile({
             </span>
           </span>
         )}
+        {deck.imageUrl && (
+          <span className={`deck-cover-icon ${deck.color}`}>
+            <Icon name={deck.icon || "cards"} size={22} />
+          </span>
+        )}
         <span className="cover-spark">
           <Icon name="spark" size={22} />
         </span>

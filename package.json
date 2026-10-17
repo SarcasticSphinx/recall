@@ -12,7 +12,7 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "postinstall": "prisma generate",
-    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test": "node --import tsx --test tests/*.test.mjs",
     "format": "prettier --write src tests docs README.md '*.json' '*.mjs' '*.ts'",
     "format:check": "prettier --check src tests docs README.md '*.json' '*.mjs' '*.ts'"
   },
@@ -53,6 +53,7 @@
     "prettier": "^3.9.10",
     "prisma": "^7.10.1",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   },
   "type": "module"

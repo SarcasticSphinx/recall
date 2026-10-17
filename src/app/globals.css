@@ -3913,3 +3913,107 @@ kbd {
 .attachment-preview {
   margin-top: 12px;
 }
+
+.editor-fields {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.image-picker-compact {
+  display: inline-flex;
+  margin: 0;
+}
+.rich-toolbar .image-picker-compact {
+  flex-shrink: 0;
+}
+.focus-image-toolbar {
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+}
+.editor-fields-inner:disabled .rich-editor-content {
+  pointer-events: none;
+  opacity: 0.65;
+}
+.deck-cover-icon {
+  position: absolute;
+  z-index: 1;
+  left: 12px;
+  top: 12px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--accent);
+}
+.sidebar-deck-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  color: var(--accent);
+}
+.activity-panel {
+  margin: 0 0 28px;
+}
+.chart-placeholder {
+  margin: 0 0 28px;
+}
+@media (max-width: 640px) {
+  .deck-cover-icon {
+    left: 4px;
+    top: 4px;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+  }
+  .deck-cover-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Keep the final save action visible, with fields scrolling in their own area. */
+.modal:has(> .editor-form) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.editor-form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+.editor-form > .editor-fields {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 3px;
+  padding-bottom: 18px;
+}
+.editor-form > .modal-actions {
+  flex-shrink: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  margin-top: 0;
+}
+
+.editor-fields-inner {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.editor-form > .editor-fields {
+  flex: 1 1 auto;
+}
+.editor-form > .modal-actions {
+  background: var(--paper);
+}

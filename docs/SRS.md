@@ -322,7 +322,7 @@ This SRS is the consolidated requirements baseline. Keep the shorter companion d
 
 - Preferences shall offer Focus and Canvas authoring. Both question and answer support rich formatting and image uploads; existing formatting remains visible in either preference.
 - Both card sides may attach Cloudinary images. Questions may also attach images alongside their text prompt. Uploads require an authenticated account and configured server credentials.
-- Decks may use a selected Lucide icon or a Cloudinary cover image. A cover takes visual precedence over the icon.
+- Decks may use a selected Lucide icon or a Cloudinary cover image. The selected icon remains visible as a badge when a cover is present.
 - Uploads accept JPEG, PNG, or WebP up to 5 MB, validate file content on the server, and allow at most 30 uploads per account per hour.
 - Interface controls use Lucide React icons. Dropdowns, selects, and editing dialogs use shadcn components while retaining the established appearance.
 - Page headings and supporting copy rotate from a local copy library on refresh; copy requires no AI calls.
@@ -339,3 +339,9 @@ The first AI workflow is notes-to-cards: 80–12,000 characters of notes, 1–5 
 ## Flat surfaces and card attachments revision
 
 Use solid surfaces without gradients. Cover, upload hints, icon controls, and form inputs must not overlap at mobile or desktop widths. Focus and Canvas both offer file upload buttons on question and answer fields, without image URL entry. Focus edits retain attachments. Startup failures offer retry and reauthentication; cached database clients must refresh after model regeneration during development, while OAuth state checks remain enforced.
+
+## Deferred image saves and study display
+
+File selection creates a local preview only. Save validates the draft first, uploads only images still referenced by the final document or cover, replaces local references with Cloudinary URLs, then persists the card/deck. Cancel does not upload files. A failed save keeps the open draft and reuses successful uploads on retry. Unsaved files are released when the editor closes; there is no draft backup across reloads.
+
+Question and answer image actions are icon buttons in the formatting toolbar. Practice shows question images immediately, conceals answer images until reveal, and requests those images eagerly when their section is mounted. The latest editor document must be read at Save. Deck icons remain visible with covers, and the weekly chart is the first section after the Today heading.

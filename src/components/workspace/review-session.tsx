@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useWorkspace } from "./workspace-context";
 import { Icon } from "@/components/icon";
 import { intervalLabel } from "@/lib/study";
-import { RichContent } from "@/components/editor/rich-content";
+import { ReviewCard } from "./review-card";
 import { Feedback } from "./feedback";
 export function ReviewSession() {
   const {
@@ -115,33 +115,7 @@ export function ReviewSession() {
                   {currentCard.schedule.reps === 0 ? "NEW CARD" : "REVIEW"}
                 </span>
               </div>
-              <article
-                className={`review-card ${session.revealed ? "is-revealed" : ""}`}
-                key={currentCard.id}
-              >
-                <span className="review-label">TAKE A MOMENT TO RECALL</span>
-                <div className="rich-question" role="heading" aria-level={1}>
-                  <RichContent
-                    document={currentCard.questionRich}
-                    text={currentCard.question}
-                  />
-                </div>
-                {session.revealed && (
-                  <div className="answer-reveal">
-                    <span className="review-label">THE ANSWER</span>
-                    <RichContent
-                      document={currentCard.answerRich}
-                      text={currentCard.answer}
-                    />
-                  </div>
-                )}
-                {!session.revealed && (
-                  <div className="recall-prompt">
-                    <Icon name="spark" size={20} />
-                    <p>Let the answer come to you.</p>
-                  </div>
-                )}
-              </article>
+              <ReviewCard card={currentCard} revealed={session.revealed} />
               <div className="review-controls">
                 {!session.revealed ? (
                   <>

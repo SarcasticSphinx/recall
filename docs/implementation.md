@@ -97,3 +97,15 @@ During development sign-in troubleshooting, the initial migration was applied to
 - Focus-mode text changes preserve image attachments on either side. Validation and preview persistence tests cover question images and attachment preservation.
 - The development logs showed a Prisma validation failure after schema regeneration. The database singleton now tracks the generated client constructor and replaces stale instances; Better Auth rebuilds its adapter when that instance changes. Read-only account preference/deck/card/source/review queries passed against Neon.
 - Account startup can retry loading through the API or start a fresh Google sign-in. OAuth failures return to the app with recovery guidance; state verification remains enabled. A separate expired/reused OAuth state was visible in logs. Fresh sign-in initiation reached the official Google login screen in the browser. Completing Google credentials and verifying the callback still requires the owner to finish that login.
+
+## Deferred uploads, practice images, and top-of-page activity
+
+- Moved the weekly chart directly below the Today page heading.
+- Deck covers retain a visible selected icon; sidebar deck entries use their icons too.
+- Image selection now creates a local object-URL preview. The final Save action validates, uploads referenced files, then persists resolved URLs. Cancel and removed images never upload. Successful uploads are reused after a failed save, and drafts remain editable for retry.
+- Both card image actions are compact icon buttons in the toolbar. Focus also uses a compact image toolbar.
+- Save reads the current rich editor document directly. Question and answer image nodes survive serialization and queue selection, and the practice card eagerly loads its visible images. Answers remain concealed until reveal.
+- Added regression tests for local staging, validation before upload, removed selections, failures/retries, round-trip card persistence, practice render/reveal, updated image references, and icons on covers. All 36 tests pass; production build and static checks pass.
+- A read-only diagnostic found no stored image nodes on the existing account card. An image that was never saved as part of a document must be attached again; there is no reliable source reference to recover automatically.
+
+- Card/deck editors keep Save visible in a separate footer while fields scroll above it.

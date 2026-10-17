@@ -84,7 +84,9 @@ export function WorkspaceNavigation() {
               setSelectedDeck(d.id);
             }}
           >
-            <span className={`color-dot ${d.color}`} />
+            <span className={`sidebar-deck-icon ${d.color}`}>
+              <Icon name={d.icon || "cards"} size={14} />
+            </span>
             {d.name}
           </button>
         ))}

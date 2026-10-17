@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useImperativeHandle, type Ref } from "react";
 import { useEditor, EditorContent, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TiptapImage from "@tiptap/extension-image";
@@ -32,9 +33,10 @@ const SafeImage = TiptapImage.extend({
         default: null,
         parseHTML: (element) => {
           const source = element.getAttribute("src") || "";
-          return /^https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//.test(
-            source,
-          )
+          return source.startsWith("blob:") ||
+            /^https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//.test(
+              source,
+            )
             ? source
             : null;
         },
@@ -43,20 +45,25 @@ const SafeImage = TiptapImage.extend({
   },
 });
 
+export type RichEditorHandle = { readDocument: () => RichNode | null };
 export function RichEditor({
   label,
   value,
   text,
   purpose,
   onChange,
-  onBusyChange,
+  onSelectImage,
+  disabled = false,
+  handle,
 }: {
   label: string;
   value?: RichNode | null;
   text: string;
   purpose: "question" | "answer";
   onChange: (value: RichNode, text: string) => void;
-  onBusyChange?: (busy: boolean) => void;
+  onSelectImage: (file: File) => string;
+  disabled?: boolean;
+  handle?: Ref<RichEditorHandle>;
 }) {
   const editor = useEditor({
     extensions: [
@@ -81,6 +88,16 @@ export function RichEditor({
       onChange(doc, richText(doc));
     },
   });
+  useEffect(() => {
+    editor?.setEditable(!disabled);
+  }, [editor, disabled]);
+  useImperativeHandle(
+    handle,
+    () => ({
+      readDocument: () => (editor ? (editor.getJSON() as RichNode) : null),
+    }),
+    [editor],
+  );
   useEditorState({
     editor,
     selector: ({ editor }) =>
@@ -121,25 +138,23 @@ export function RichEditor({
   }
   return (
     <div className="rich-editor">
-      <div className="editor-attachments">
-        <ImageUpload
-          purpose={purpose}
-          label={`Add ${purpose} image`}
-          onBusyChange={onBusyChange}
-          onUpload={(url) =>
-            editor
-              ?.chain()
-              .focus()
-              .setImage({ src: url, alt: `${label} illustration` })
-              .run()
-          }
-        />
-      </div>
       <div
         className="rich-toolbar"
         role="toolbar"
         aria-label={`${label} formatting`}
       >
+        <ImageUpload
+          purpose={purpose}
+          disabled={disabled || !editor}
+          onSelect={(file) => {
+            const src = onSelectImage(file);
+            editor
+              ?.chain()
+              .focus()
+              .setImage({ src, alt: `${label} illustration` })
+              .run();
+          }}
+        />
         {tool(
           "Bold",
           Bold,

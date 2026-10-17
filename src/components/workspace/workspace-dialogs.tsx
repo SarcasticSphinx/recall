@@ -13,7 +13,8 @@ export function WorkspaceDialogs() {
   const {
     modal,
     setModal,
-    busy,
+    busy: workspaceBusy,
+    mediaBusy,
     setError,
     error,
     authEnabled,
@@ -22,6 +23,7 @@ export function WorkspaceDialogs() {
     setSelectedDeck,
     setNotice,
   } = useWorkspace();
+  const busy = workspaceBusy || mediaBusy;
   if (!modal) return null;
   const title =
     modal.type === "deck"

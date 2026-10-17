@@ -33,6 +33,7 @@ export function useWorkspaceController({
   );
   const [session, setSession] = useState<StudySession | null>(null);
   const [busy, setBusy] = useState(false);
+  const [mediaBusy, setMediaBusy] = useState(false);
   const [error, setError] = useState(
     authError && !user
       ? "Sign-in couldn't finish. Start a fresh Google sign-in below."
@@ -267,6 +268,8 @@ export function useWorkspaceController({
     session,
     setSession,
     busy,
+    mediaBusy,
+    setMediaBusy,
     error,
     setError,
     notice,

@@ -1,9 +1,9 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import type { RichNode } from "@/lib/rich-content";
-function render(node: RichNode, key: string): ReactNode {
+function render(node: RichNode, key: string, eagerImages: boolean): ReactNode {
   const children = node.content?.map((child, i) =>
-    render(child, `${key}-${i}`),
+    render(child, `${key}-${i}`, eagerImages),
   );
   if (node.type === "text")
     return (node.marks || []).reduce<ReactNode>((text, mark) => {
@@ -78,6 +78,7 @@ function render(node: RichNode, key: string): ReactNode {
           key={key}
           src={node.attrs.src}
           alt={String(node.attrs.alt || "Card illustration")}
+          loading={eagerImages ? "eager" : "lazy"}
           width={1000}
           height={750}
           unoptimized
@@ -91,12 +92,14 @@ function render(node: RichNode, key: string): ReactNode {
 export function RichContent({
   document,
   text,
+  eagerImages = false,
 }: {
   document?: RichNode | null;
   text: string;
+  eagerImages?: boolean;
 }) {
   return document ? (
-    render(document, "doc")
+    render(document, "doc", eagerImages)
   ) : (
     <p className="plain-content">{text}</p>
   );
